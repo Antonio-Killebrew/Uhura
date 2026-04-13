@@ -1,4 +1,4 @@
-# Final Project Proposal
+# Uhura
 
 ## https://github.com/Antonio-Killebrew/project
 
@@ -28,7 +28,7 @@ Ideal Outcome:
 - The game will be fully functional for the player to use for any amount of time.
 
 Minimal Viable Outcome:
-- At the very least the game will feature a player character that can move across platforms.
+- At the very least the game will feature a player character that can move across platforms avoiding gaps.
 
 ## Milestones
 
