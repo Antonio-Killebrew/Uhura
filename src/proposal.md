@@ -1,6 +1,6 @@
 # Uhura
 
-## https://github.com/Antonio-Killebrew/project
+## https://github.com/Antonio-Killebrew/Uhura
 
 ## Description
 This program will generate an interactive video game for the user to play.
