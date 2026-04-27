@@ -9,8 +9,11 @@ window = pygame.display.set_mode((GAME_WIDTH,GAME_HEIGHT))
 pygame.display.set_caption("Uhura")
 clock = pygame.time.Clock()
 
+player = pygame.Rect(150,150,50,50)
+
 def draw():
     window.fill((20,18,167))
+    pygame.draw.rect(window,(2,239,238), player)
 
 while True:
     for event in pygame.event.get():
