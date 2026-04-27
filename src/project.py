@@ -4,6 +4,8 @@ from sys import exit
 GAME_WIDTH = 512
 GAME_HEIGHT = 512
 
+background_image = pygame.image.load("images/background.png")
+
 pygame.init()
 window = pygame.display.set_mode((GAME_WIDTH,GAME_HEIGHT))
 pygame.display.set_caption("Uhura")
@@ -13,7 +15,8 @@ player = pygame.Rect(150,150,50,50)
 
 def draw():
     window.fill((20,18,167))
-    pygame.draw.rect(window,(2,239,238), player)
+    window.blit(background_image,(0,0))
+    pygame.draw.rect(window,(2,239,238),player)
 
 while True:
     for event in pygame.event.get():
