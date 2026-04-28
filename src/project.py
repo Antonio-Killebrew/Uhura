@@ -19,6 +19,9 @@ FRICTION = 0.4
 PLAYER_VELOCITY_X = 5
 PLAYER_VELOCITY_Y = -11
 
+HEALTH_WIDTH = 16
+HEALTH_HEIGHT = 4
+
 METALL_WIDTH = 36
 METALL_HEIGHT = 30
 
@@ -35,6 +38,7 @@ player_image_jump_right = load_image("megaman-right-jump.png",(PLAYER_JUMP_WIDTH
 player_image_jump_left = load_image("megaman-left-jump.png",(PLAYER_JUMP_WIDTH,PLAYER_JUMP_HEIGHT))
 floor_tile_image = load_image("floor-tile.png", (TILE_SIZE,TILE_SIZE))
 metall_image_left = load_image("metall-left.png", (METALL_WIDTH,METALL_HEIGHT))
+health_image = load_image("health.png",(HEALTH_WIDTH,HEALTH_HEIGHT))
 
 pygame.init()
 window = pygame.display.set_mode((GAME_WIDTH,GAME_HEIGHT))
@@ -170,8 +174,11 @@ def draw():
     for metall in metalls:
         window.blit(metall.image, metall)
 
-    pygame.draw.rect(window, "red", (TILE_SIZE,TILE_SIZE, 10*player.max_health, 10))
-    pygame.draw.rect(window, "green", (TILE_SIZE,TILE_SIZE, 10*player.health, 10))
+    # pygame.draw.rect(window, "red", (TILE_SIZE,TILE_SIZE, 10*player.max_health, 10))
+    # pygame.draw.rect(window, "green", (TILE_SIZE,TILE_SIZE, 10*player.health, 10))
+    pygame.draw.rect(window, "black", (TILE_SIZE,TILE_SIZE,HEALTH_WIDTH,HEALTH_HEIGHT*player.max_health))
+    for i in range(player.max_health - player.health, player.max_health):
+        window.blit(health_image, (TILE_SIZE,TILE_SIZE+i*HEALTH_HEIGHT,HEALTH_WIDTH,HEALTH_HEIGHT))
 
 player = Player()
 # metall = Metall(player.x + TILE_SIZE*3, TILE_SIZE*6)
