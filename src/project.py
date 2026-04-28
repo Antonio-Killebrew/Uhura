@@ -42,6 +42,8 @@ pygame.display.set_caption("Uhura")
 pygame.display.set_icon(player_image_right)
 clock = pygame.time.Clock()
 
+INVINCIBLE_END = pygame.USEREVENT + 0
+
 class Player(pygame.Rect):
     def __init__(self):
         pygame.Rect.__init__(self, PLAYER_X, PLAYER_Y, PLAYER_WIDTH, PLAYER_HEIGHT)
@@ -50,6 +52,7 @@ class Player(pygame.Rect):
         self.velocity_y = 0
         self.direction = "right"
         self.jumping = False
+        self.invincible = False
 
     def update_image(self):
         if self.jumping:
@@ -62,6 +65,10 @@ class Player(pygame.Rect):
                 self.image = player_image_right
             elif self.direction == "left":
                 self.image = player_image_left
+
+    def set_invincible(self,milliseconds=1000):
+        self.invincible = True
+        pygame.time.set_timer(INVINCIBLE_END,milliseconds,1)
 
 class Metall(pygame.Rect):
     def __init__(self,x,y):
@@ -144,8 +151,9 @@ def move():
 
         check_tile_collision_y(metall)
 
-        if player.colliderect(metall):
+        if not player.invincible and player.colliderect(metall):
             print("collision with metall")
+            player.set_invincible()
 
 def draw():
     window.fill((20,18,167))
@@ -170,6 +178,9 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+
+        if event.type == INVINCIBLE_END:
+            player.invincible = False
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP] or keys[pygame.K_w] and not player.jumping:
