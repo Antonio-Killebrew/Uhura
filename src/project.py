@@ -9,6 +9,8 @@ PLAYER_X = GAME_WIDTH/2
 PLAYER_Y = GAME_WIDTH/2
 PLAYER_WIDTH = 42
 PLAYER_HEIGHT = 48
+PLAYER_JUMP_WIDTH = 52
+PLAYER_JUMP_HEIGHT = 60
 PLAYER_DISTANCE = 5
 
 GRAVITY = 0.5
@@ -24,6 +26,9 @@ def load_image(image_name, scale=None):
 background_image = load_image("background.png")
 player_image_right = load_image("megaman-right.png", (PLAYER_WIDTH, PLAYER_HEIGHT))
 player_image_left = load_image("megaman-left.png",(PLAYER_WIDTH, PLAYER_HEIGHT))
+player_image_jump_right = load_image("megaman-right-jump.png",(PLAYER_JUMP_WIDTH,PLAYER_JUMP_HEIGHT))
+player_image_jump_left = load_image("megaman-left-jump.png",(PLAYER_JUMP_WIDTH,PLAYER_JUMP_HEIGHT))
+
 
 pygame.init()
 window = pygame.display.set_mode((GAME_WIDTH,GAME_HEIGHT))
@@ -40,10 +45,20 @@ class Player(pygame.Rect):
         self.jumping = False
 
     def update_image(self):
-        if self.direction == "right":
-            self.image = player_image_right
-        elif self.direction == "left":
-            self.image = player_image_left
+        if self.jumping:
+            self.width = PLAYER_JUMP_WIDTH
+            self.height = PLAYER_JUMP_HEIGHT
+            if self.direction == "right":
+                self.image = player_image_jump_right
+            elif self.direction == "left":
+                self.image = player_image_jump_left
+        else:
+            self.width = PLAYER_WIDTH
+            self.height = PLAYER_HEIGHT
+            if self.direction == "right":
+                self.image = player_image_right
+            elif self.direction == "left":
+                self.image = player_image_left
 
 player = Player()
 
