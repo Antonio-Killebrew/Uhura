@@ -50,6 +50,7 @@ player_image_jump_shoot_left = load_image("megaman-left-jump-shoot.png",
                                       (PLAYER_JUMP_SHOOT_WIDTH, PLAYER_JUMP_HEIGHT))
 player_image_bullet = load_image("bullet.png", (PLAYER_BULLET_WIDTH,PLAYER_BULLET_HEIGHT))
 floor_tile_image = load_image("floor-tile.png", (TILE_SIZE,TILE_SIZE))
+metall_image_right = load_image("metall-right.png", (METALL_WIDTH,METALL_HEIGHT))
 metall_image_left = load_image("metall-left.png", (METALL_WIDTH,METALL_HEIGHT))
 health_image = load_image("health.png",(HEALTH_WIDTH,HEALTH_HEIGHT))
 
@@ -129,6 +130,12 @@ class Metall(pygame.Rect):
         self.direction = "left"
         self.jumping = False
         self.health = 1
+
+    def update_image(self):
+        if self.direction == "right":
+            self.image = metall_image_right
+        elif self.direction == "left":
+            self.image = metall_image_left
 
 class Tile(pygame.Rect):
     def __init__(self,x,y,image):
@@ -211,6 +218,11 @@ def move():
     metalls = [metall for metall in metalls if metall.health > 0]
 
     for metall in metalls:
+        if player.x < metall.x:
+            metall.direction = "left"
+        else:
+            metall.direction = "right"
+
         metall.velocity_y += GRAVITY
         metall.y += metall.velocity_y
 
@@ -235,16 +247,14 @@ def draw():
         window.blit(bullet.image, bullet)
 
     for metall in metalls:
+        metall.update_image()
         window.blit(metall.image, metall)
 
-    # pygame.draw.rect(window, "red", (TILE_SIZE,TILE_SIZE, 10*player.max_health, 10))
-    # pygame.draw.rect(window, "green", (TILE_SIZE,TILE_SIZE, 10*player.health, 10))
     pygame.draw.rect(window, "black", (TILE_SIZE,TILE_SIZE,HEALTH_WIDTH,HEALTH_HEIGHT*player.max_health))
     for i in range(player.max_health - player.health, player.max_health):
         window.blit(health_image, (TILE_SIZE,TILE_SIZE+i*HEALTH_HEIGHT,HEALTH_WIDTH,HEALTH_HEIGHT))
 
 player = Player()
-# metall = Metall(player.x + TILE_SIZE*3, TILE_SIZE*6)
 metalls = []
 tiles = []
 create_map() 
