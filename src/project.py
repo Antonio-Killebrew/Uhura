@@ -12,6 +12,8 @@ PLAYER_WIDTH = 42
 PLAYER_HEIGHT = 48
 PLAYER_JUMP_WIDTH = 52
 PLAYER_JUMP_HEIGHT = 60
+PLAYER_SHOOT_WIDTH = 62
+PLAYER_JUMP_SHOOT_WIDTH = 58
 PLAYER_DISTANCE = 5
 
 GRAVITY = 0.5
@@ -36,6 +38,12 @@ player_image_right = load_image("megaman-right.png", (PLAYER_WIDTH, PLAYER_HEIGH
 player_image_left = load_image("megaman-left.png",(PLAYER_WIDTH, PLAYER_HEIGHT))
 player_image_jump_right = load_image("megaman-right-jump.png",(PLAYER_JUMP_WIDTH,PLAYER_JUMP_HEIGHT))
 player_image_jump_left = load_image("megaman-left-jump.png",(PLAYER_JUMP_WIDTH,PLAYER_JUMP_HEIGHT))
+player_image_shoot_right = load_image("megaman-right-shoot.png",(PLAYER_SHOOT_WIDTH,PLAYER_HEIGHT))
+player_image_shoot_left = load_image("megaman-left-shoot.png",(PLAYER_SHOOT_WIDTH,PLAYER_HEIGHT))
+player_image_jump_shoot_right = load_image("megaman-right-jump-shoot.png",
+                                      (PLAYER_JUMP_SHOOT_WIDTH, PLAYER_JUMP_HEIGHT))
+player_image_jump_shoot_left = load_image("megaman-left-jump-shoot.png",
+                                      (PLAYER_JUMP_SHOOT_WIDTH, PLAYER_JUMP_HEIGHT))
 floor_tile_image = load_image("floor-tile.png", (TILE_SIZE,TILE_SIZE))
 metall_image_left = load_image("metall-left.png", (METALL_WIDTH,METALL_HEIGHT))
 health_image = load_image("health.png",(HEALTH_WIDTH,HEALTH_HEIGHT))
@@ -59,9 +67,20 @@ class Player(pygame.Rect):
         self.invincible = False
         self.max_health = 28
         self.health = self.max_health
+        self.shooting = False
 
     def update_image(self):
-        if self.jumping:
+        if self.jumping and self.shooting:
+            if self.direction == "right":
+                self.image = player_image_jump_shoot_right
+            elif self.direction == "left":
+                self.image = player_image_jump_shoot_left
+        elif self.shooting:
+            if self.direction == "right":
+                self.image = player_image_shoot_right
+            elif self.direction == "left":
+                self.image = player_image_shoot_left
+        elif self.jumping:
             if self.direction == "right":
                 self.image = player_image_jump_right
             elif self.direction == "left":
@@ -75,6 +94,9 @@ class Player(pygame.Rect):
     def set_invincible(self,milliseconds=1000):
         self.invincible = True
         pygame.time.set_timer(INVINCIBLE_END,milliseconds,1)
+
+    def set_shooting(self):
+        self.shooting = True
 
 class Metall(pygame.Rect):
     def __init__(self,x,y):
@@ -207,6 +229,9 @@ while True:
     if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
         player.velocity_x = PLAYER_VELOCITY_X
         player.direction = "right"
+
+    if keys[pygame.K_x] or keys[pygame.K_SPACE]:
+        player.set_shooting()
 
     move()
     draw()
