@@ -14,6 +14,8 @@ PLAYER_JUMP_HEIGHT = 60
 PLAYER_DISTANCE = 5
 
 GRAVITY = 0.5
+FRICTION = 0.4
+PLAYER_VELOCITY_X = 5
 PLAYER_VELOCITY_Y = -10
 FLOOR_Y = GAME_HEIGHT * 3/4
 
@@ -40,6 +42,7 @@ class Player(pygame.Rect):
     def __init__(self):
         pygame.Rect.__init__(self, PLAYER_X, PLAYER_Y, PLAYER_WIDTH, PLAYER_HEIGHT)
         self.image = player_image_right
+        self.velocity_x = 0
         self.velocity_y = 0
         self.direction = "right"
         self.jumping = False
@@ -63,6 +66,19 @@ class Player(pygame.Rect):
 player = Player()
 
 def move():
+    if player.direction == "left" and player.velocity_x < 0:
+        player.velocity_x += FRICTION
+    elif player.direction == "right" and player.velocity_x > 0:
+        player.velocity_x -= FRICTION
+    else:
+        player.velocity_x = 0
+
+    player.x += player.velocity_x
+    if player.x < 0:
+        player.x = 0
+    elif player.x + player.width > GAME_WIDTH:
+        player.x = GAME_WIDTH - player.width
+
     player.velocity_y += GRAVITY
     player.y += player.velocity_y
 
@@ -88,11 +104,11 @@ while True:
         player.jumping = True
 
     if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-        player.x = max(player.x - PLAYER_DISTANCE, 0)
+        player.velocity_x = -PLAYER_VELOCITY_X
         player.direction = "left"
 
     if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-        player.x = min(player.x + PLAYER_DISTANCE, GAME_WIDTH - player.width)
+        player.velocity_x = PLAYER_VELOCITY_X
         player.direction = "right"
 
     move()
