@@ -17,6 +17,7 @@ player_image_right = pygame.transform.scale(player_image_right,(PLAYER_WIDTH,PLA
 pygame.init()
 window = pygame.display.set_mode((GAME_WIDTH,GAME_HEIGHT))
 pygame.display.set_caption("Uhura")
+pygame.display.set_icon(player_image_right)
 clock = pygame.time.Clock()
 
 class Player(pygame.Rect):
