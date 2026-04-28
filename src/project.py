@@ -53,6 +53,8 @@ class Player(pygame.Rect):
         self.direction = "right"
         self.jumping = False
         self.invincible = False
+        self.max_health = 28
+        self.health = self.max_health
 
     def update_image(self):
         if self.jumping:
@@ -153,6 +155,7 @@ def move():
 
         if not player.invincible and player.colliderect(metall):
             print("collision with metall")
+            player.health -= 1
             player.set_invincible()
 
 def draw():
@@ -166,6 +169,9 @@ def draw():
     window.blit(player.image,player)
     for metall in metalls:
         window.blit(metall.image, metall)
+
+    pygame.draw.rect(window, "red", (TILE_SIZE,TILE_SIZE, 10*player.max_health, 10))
+    pygame.draw.rect(window, "green", (TILE_SIZE,TILE_SIZE, 10*player.health, 10))
 
 player = Player()
 # metall = Metall(player.x + TILE_SIZE*3, TILE_SIZE*6)
