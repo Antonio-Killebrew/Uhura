@@ -151,7 +151,7 @@ class Metall(pygame.Rect):
         self.jumping = False
         self.health = 1
         self.bullets = []
-        self.shooting = False
+        self.last_fired = pygame.time.get_ticks()
 
     def update_image(self):
         if self.direction == "right":
@@ -160,10 +160,13 @@ class Metall(pygame.Rect):
             self.image = metall_image_left
 
     def set_shooting(self):
-        self.shooting = True
-        self.bullets.append(Metall.Bullet(self,-METALL_BULLET_VELOCITY_Y))
-        self.bullets.append(Metall.Bullet(self,0))
-        self.bullets.append(Metall.Bullet(self,METALL_BULLET_VELOCITY_Y))
+        if abs(self.x - player.x) <= TILE_SIZE*4:
+            now = pygame.time.get_ticks()
+            if now - self.last_fired > 1000:
+                self.last_fired = now
+                self.bullets.append(Metall.Bullet(self,-METALL_BULLET_VELOCITY_Y))
+                self.bullets.append(Metall.Bullet(self,0))
+                self.bullets.append(Metall.Bullet(self,METALL_BULLET_VELOCITY_Y))
 
 class Tile(pygame.Rect):
     def __init__(self,x,y,image):
@@ -265,6 +268,13 @@ def move():
         for bullet in metall.bullets:
             bullet.x += bullet.velocity_x
             bullet.y += bullet.velocity_y
+            if not player.invincible and player.colliderect(bullet):
+                player.health -= 2
+                bullet.used = True
+                player.set_invincible()
+
+        metall.bullets = [bullet for bullet in metall.bullets if not bullet.used \
+                          and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
 
 def draw():
     window.fill((20,18,167))
