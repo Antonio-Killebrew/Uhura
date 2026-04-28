@@ -9,6 +9,7 @@ PLAYER_X = GAME_WIDTH/2
 PLAYER_Y = GAME_WIDTH/2
 PLAYER_WIDTH = 42
 PLAYER_HEIGHT = 48
+PLAYER_DISTANCE = 5
 
 background_image = pygame.image.load(os.path.join("images","background.png"))
 player_image_right = pygame.image.load(os.path.join("images","megaman-right.png"))
@@ -40,13 +41,16 @@ while True:
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP] or keys[pygame.K_w]:
-        player.y -= 5
+        player.y = max(player.y - PLAYER_DISTANCE, 0)
+
     if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-        player.y += 5
+        player.y = min(player.y + PLAYER_DISTANCE, GAME_HEIGHT - player.height)
+
     if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-        player.x -= 5
+        player.x = max(player.x - PLAYER_DISTANCE, 0)
+
     if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-        player.x += 5
+        player.x = min(player.x + PLAYER_DISTANCE, GAME_WIDTH - player.width)
 
     draw()
     pygame.display.update()
