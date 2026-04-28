@@ -2,6 +2,7 @@ import os
 import pygame
 from sys import exit
 
+TILE_SIZE = 32
 GAME_WIDTH = 512
 GAME_HEIGHT = 512
 
@@ -30,7 +31,7 @@ player_image_right = load_image("megaman-right.png", (PLAYER_WIDTH, PLAYER_HEIGH
 player_image_left = load_image("megaman-left.png",(PLAYER_WIDTH, PLAYER_HEIGHT))
 player_image_jump_right = load_image("megaman-right-jump.png",(PLAYER_JUMP_WIDTH,PLAYER_JUMP_HEIGHT))
 player_image_jump_left = load_image("megaman-left-jump.png",(PLAYER_JUMP_WIDTH,PLAYER_JUMP_HEIGHT))
-
+floor_tile_image = load_image("floor-tile.png", (TILE_SIZE,TILE_SIZE))
 
 pygame.init()
 window = pygame.display.set_mode((GAME_WIDTH,GAME_HEIGHT))
@@ -63,7 +64,15 @@ class Player(pygame.Rect):
             elif self.direction == "left":
                 self.image = player_image_left
 
-player = Player()
+class Tile(pygame.Rect):
+    def __init__(self,x,y,image):
+        pygame.Rect.__init__(self,x,y,TILE_SIZE,TILE_SIZE)
+        self.image = image
+
+def create_map():
+    for i in range(4):
+        tile = Tile(player.x + i*TILE_SIZE, player.y + TILE_SIZE*2, floor_tile_image)
+        tiles.append(tile)
 
 def move():
     if player.direction == "left" and player.velocity_x < 0:
@@ -89,8 +98,16 @@ def move():
 def draw():
     window.fill((20,18,167))
     window.blit(background_image,(0,80))
+
+    for tile in tiles:
+        window.blit(tile.image, tile)
+
     player.update_image()
     window.blit(player.image,player)
+
+player = Player()
+tiles = []
+create_map() 
 
 while True:
     for event in pygame.event.get():
