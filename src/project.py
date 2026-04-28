@@ -89,6 +89,10 @@ def create_map():
         tile = Tile(TILE_SIZE*3, (i+10)*TILE_SIZE, floor_tile_image)
         tiles.append(tile)
 
+    for i in range(3):
+        metall = Metall(player.x + TILE_SIZE*(3+i*1.5),TILE_SIZE*6)
+        metalls.append(metall)
+
 def check_tile_collision(character):
     for tile in tiles:
         if character.colliderect(tile):
@@ -134,11 +138,14 @@ def move():
     player.y += player.velocity_y
 
     check_tile_collision_y(player)
+    for metall in metalls:
+        metall.velocity_y += GRAVITY
+        metall.y += metall.velocity_y
 
-    metall.velocity_y += GRAVITY
-    metall.y += metall.velocity_y
+        check_tile_collision_y(metall)
 
-    check_tile_collision_y(metall)
+        if player.colliderect(metall):
+            print("collision with metall")
 
 def draw():
     window.fill((20,18,167))
@@ -149,10 +156,12 @@ def draw():
 
     player.update_image()
     window.blit(player.image,player)
-    window.blit(metall.image, metall)
+    for metall in metalls:
+        window.blit(metall.image, metall)
 
 player = Player()
-metall = Metall(player.x + TILE_SIZE*3, TILE_SIZE*6)
+# metall = Metall(player.x + TILE_SIZE*3, TILE_SIZE*6)
+metalls = []
 tiles = []
 create_map() 
 
