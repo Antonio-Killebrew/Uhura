@@ -60,6 +60,7 @@ pygame.display.set_icon(player_image_right)
 clock = pygame.time.Clock()
 
 INVINCIBLE_END = pygame.USEREVENT + 0
+SHOOTING_END = pygame.USEREVENT + 1
 
 class Player(pygame.Rect):
     class Bullet(pygame.Rect):
@@ -73,6 +74,7 @@ class Player(pygame.Rect):
                                      PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT)
                 self.velocity_x = PLAYER_BULLET_VELOCITY_X
             self.image = player_image_bullet
+            self.used = False
 
     def __init__(self):
         pygame.Rect.__init__(self, PLAYER_X, PLAYER_Y, PLAYER_WIDTH, PLAYER_HEIGHT)
@@ -114,8 +116,10 @@ class Player(pygame.Rect):
         pygame.time.set_timer(INVINCIBLE_END,milliseconds,1)
 
     def set_shooting(self):
-        self.shooting = True
-        self.bullets.append(Player.Bullet())
+        if not self.shooting:
+            self.shooting = True
+            self.bullets.append(Player.Bullet())
+            pygame.time.set_timer(SHOOTING_END, 250, 1)
 
 class Metall(pygame.Rect):
     def __init__(self,x,y):
@@ -124,6 +128,7 @@ class Metall(pygame.Rect):
         self.velocity_y = 0
         self.direction = "left"
         self.jumping = False
+        self.health = 1
 
 class Tile(pygame.Rect):
     def __init__(self,x,y,image):
@@ -173,6 +178,7 @@ def check_tile_collision_y(character):
         character.velocity_y = 0
 
 def move():
+    global metalls
     if player.direction == "left" and player.velocity_x < 0:
         player.velocity_x += FRICTION
     elif player.direction == "right" and player.velocity_x > 0:
@@ -195,6 +201,13 @@ def move():
 
     for bullet in player.bullets:
         bullet.x += bullet.velocity_x
+        for metall in metalls:
+            if metall.health > 0 and not bullet.used and bullet.colliderect(metall):
+                metall.health -= 1
+                bullet.used = True
+
+    player.bullets = [bullet for bullet in player.bullets if not bullet.used]
+    metalls = [metall for metall in metalls if metall.health > 0]
 
     for metall in metalls:
         metall.velocity_y += GRAVITY
@@ -243,6 +256,8 @@ while True:
 
         if event.type == INVINCIBLE_END:
             player.invincible = False
+        elif event.type == SHOOTING_END:
+            player.shooting = False
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP] or keys[pygame.K_w] and not player.jumping:
