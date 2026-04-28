@@ -253,8 +253,9 @@ def move():
         bullet.x += bullet.velocity_x
         for metall in metalls:
             if metall.health > 0 and not bullet.used and bullet.colliderect(metall):
-                metall.health -= 1
                 bullet.used = True
+                if not metall.guarding:
+                    metall.health -= 1
 
     player.bullets = [bullet for bullet in player.bullets if not bullet.used \
                       and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
