@@ -19,6 +19,9 @@ FRICTION = 0.4
 PLAYER_VELOCITY_X = 5
 PLAYER_VELOCITY_Y = -11
 
+METALL_WIDTH = 36
+METALL_HEIGHT = 30
+
 def load_image(image_name, scale=None):
     image = pygame.image.load(os.path.join("images",image_name))
     if scale is not None:
@@ -31,6 +34,7 @@ player_image_left = load_image("megaman-left.png",(PLAYER_WIDTH, PLAYER_HEIGHT))
 player_image_jump_right = load_image("megaman-right-jump.png",(PLAYER_JUMP_WIDTH,PLAYER_JUMP_HEIGHT))
 player_image_jump_left = load_image("megaman-left-jump.png",(PLAYER_JUMP_WIDTH,PLAYER_JUMP_HEIGHT))
 floor_tile_image = load_image("floor-tile.png", (TILE_SIZE,TILE_SIZE))
+metall_image_left = load_image("metall-left.png", (METALL_WIDTH,METALL_HEIGHT))
 
 pygame.init()
 window = pygame.display.set_mode((GAME_WIDTH,GAME_HEIGHT))
@@ -59,6 +63,14 @@ class Player(pygame.Rect):
             elif self.direction == "left":
                 self.image = player_image_left
 
+class Metall(pygame.Rect):
+    def __init__(self,x,y):
+        pygame.Rect.__init__(self,x,y,METALL_WIDTH,METALL_HEIGHT)
+        self.image = metall_image_left
+        self.velocity_y = 0
+        self.direction = "left"
+        self.jumping = False
+
 class Tile(pygame.Rect):
     def __init__(self,x,y,image):
         pygame.Rect.__init__(self,x,y,TILE_SIZE,TILE_SIZE)
@@ -77,30 +89,30 @@ def create_map():
         tile = Tile(TILE_SIZE*3, (i+10)*TILE_SIZE, floor_tile_image)
         tiles.append(tile)
 
-def check_tile_collision():
+def check_tile_collision(character):
     for tile in tiles:
-        if player.colliderect(tile):
+        if character.colliderect(tile):
             return tile
     return None
 
-def check_tile_collision_x():
-    tile = check_tile_collision()
+def check_tile_collision_x(character):
+    tile = check_tile_collision(character)
     if tile is not None:
-        if player.velocity_x < 0:
-            player.x = tile.x + tile.width
-        elif player.velocity_x > 0:
-            player.x = tile.x - player.width
-        player.velocity_x = 0
+        if character.velocity_x < 0:
+            character.x = tile.x + tile.width
+        elif character.velocity_x > 0:
+            character.x = tile.x - character.width
+        character.velocity_x = 0
 
-def check_tile_collision_y():
-    tile = check_tile_collision()
+def check_tile_collision_y(character):
+    tile = check_tile_collision(character)
     if tile is not None:
-        if player.velocity_y < 0:
-            player.y = tile.y + tile.height
-        elif player.velocity_y > 0:
-            player.y = tile.y - player.height
-            player.jumping = False
-        player.velocity_y = 0
+        if character.velocity_y < 0:
+            character.y = tile.y + tile.height
+        elif character.velocity_y > 0:
+            character.y = tile.y - character.height
+            character.jumping = False
+        character.velocity_y = 0
 
 def move():
     if player.direction == "left" and player.velocity_x < 0:
@@ -116,12 +128,17 @@ def move():
     elif player.x + player.width > GAME_WIDTH:
         player.x = GAME_WIDTH - player.width
 
-    check_tile_collision_x()
+    check_tile_collision_x(player)
 
     player.velocity_y += GRAVITY
     player.y += player.velocity_y
 
-    check_tile_collision_y()
+    check_tile_collision_y(player)
+
+    metall.velocity_y += GRAVITY
+    metall.y += metall.velocity_y
+
+    check_tile_collision_y(metall)
 
 def draw():
     window.fill((20,18,167))
@@ -132,8 +149,10 @@ def draw():
 
     player.update_image()
     window.blit(player.image,player)
+    window.blit(metall.image, metall)
 
 player = Player()
+metall = Metall(player.x + TILE_SIZE*3, TILE_SIZE*6)
 tiles = []
 create_map() 
 
