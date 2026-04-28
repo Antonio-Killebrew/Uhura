@@ -200,6 +200,7 @@ class Item(pygame.Rect):
         self.image = image
         self.jumping = False
         self.velocity_y = ITEM_VELOCITY_Y
+        self.used = False
 
 def create_map():
     for i in range(4):
@@ -251,7 +252,7 @@ def drop_item(character):
         items.append(Item(character.x, character.y, life_energy_image))
 
 def move():
-    global metalls
+    global metalls, items
     if player.direction == "left" and player.velocity_x < 0:
         player.velocity_x += FRICTION
     elif player.direction == "right" and player.velocity_x > 0:
@@ -318,6 +319,13 @@ def move():
         item.velocity_y += GRAVITY
         item.y += item.velocity_y
         check_tile_collision_y(item)
+        if player.colliderect(item):
+            item.used = True
+            if item.image == life_energy_image:
+                player.health = min(player.health + 2, player.max_health)
+            elif item.image == big_life_energy_image:
+                player.health = min(player.health + 8, player.max_health)
+    items = [item for item in items if not item.used]
 
 def draw():
     window.fill((20,18,167))
