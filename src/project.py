@@ -198,6 +198,7 @@ class Item(pygame.Rect):
     def __init__(self,x,y,image):
         pygame.Rect.__init__(self,x,y,image.get_width(),image.get_height())
         self.image = image
+        self.jumping = False
         self.velocity_y = ITEM_VELOCITY_Y
 
 def create_map():
@@ -316,6 +317,7 @@ def move():
     for item in items:
         item.velocity_y += GRAVITY
         item.y += item.velocity_y
+        check_tile_collision_y(item)
 
 def draw():
     window.fill((20,18,167))
