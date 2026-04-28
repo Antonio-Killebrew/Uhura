@@ -21,6 +21,10 @@ FRICTION = 0.4
 PLAYER_VELOCITY_X = 5
 PLAYER_VELOCITY_Y = -11
 
+PLAYER_BULLET_WIDTH = 16
+PLAYER_BULLET_HEIGHT = 12
+PLAYER_BULLET_VELOCITY_X = 8
+
 HEALTH_WIDTH = 16
 HEALTH_HEIGHT = 4
 
@@ -44,6 +48,7 @@ player_image_jump_shoot_right = load_image("megaman-right-jump-shoot.png",
                                       (PLAYER_JUMP_SHOOT_WIDTH, PLAYER_JUMP_HEIGHT))
 player_image_jump_shoot_left = load_image("megaman-left-jump-shoot.png",
                                       (PLAYER_JUMP_SHOOT_WIDTH, PLAYER_JUMP_HEIGHT))
+player_image_bullet = load_image("bullet.png", (PLAYER_BULLET_WIDTH,PLAYER_BULLET_HEIGHT))
 floor_tile_image = load_image("floor-tile.png", (TILE_SIZE,TILE_SIZE))
 metall_image_left = load_image("metall-left.png", (METALL_WIDTH,METALL_HEIGHT))
 health_image = load_image("health.png",(HEALTH_WIDTH,HEALTH_HEIGHT))
@@ -57,6 +62,18 @@ clock = pygame.time.Clock()
 INVINCIBLE_END = pygame.USEREVENT + 0
 
 class Player(pygame.Rect):
+    class Bullet(pygame.Rect):
+        def __init__(self):
+            if player.direction == "left":
+                pygame.Rect.__init__(self, player.x, player.y + TILE_SIZE/2,
+                                     PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT)
+                self.velocity_x = -PLAYER_BULLET_VELOCITY_X
+            elif player.direction == "right":
+                pygame.Rect.__init__(self, player.x + player.width, player.y + TILE_SIZE/2,
+                                     PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT)
+                self.velocity_x = PLAYER_BULLET_VELOCITY_X
+            self.image = player_image_bullet
+
     def __init__(self):
         pygame.Rect.__init__(self, PLAYER_X, PLAYER_Y, PLAYER_WIDTH, PLAYER_HEIGHT)
         self.image = player_image_right
@@ -68,6 +85,7 @@ class Player(pygame.Rect):
         self.max_health = 28
         self.health = self.max_health
         self.shooting = False
+        self.bullets = []
 
     def update_image(self):
         if self.jumping and self.shooting:
@@ -97,6 +115,7 @@ class Player(pygame.Rect):
 
     def set_shooting(self):
         self.shooting = True
+        self.bullets.append(Player.Bullet())
 
 class Metall(pygame.Rect):
     def __init__(self,x,y):
@@ -173,6 +192,10 @@ def move():
     player.y += player.velocity_y
 
     check_tile_collision_y(player)
+
+    for bullet in player.bullets:
+        bullet.x += bullet.velocity_x
+
     for metall in metalls:
         metall.velocity_y += GRAVITY
         metall.y += metall.velocity_y
@@ -193,6 +216,10 @@ def draw():
 
     player.update_image()
     window.blit(player.image,player)
+
+    for bullet in player.bullets:
+        window.blit(bullet.image, bullet)
+
     for metall in metalls:
         window.blit(metall.image, metall)
 
