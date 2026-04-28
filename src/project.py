@@ -57,6 +57,8 @@ player_image_bullet = load_image("bullet.png", (PLAYER_BULLET_WIDTH,PLAYER_BULLE
 floor_tile_image = load_image("floor-tile.png", (TILE_SIZE,TILE_SIZE))
 metall_image_right = load_image("metall-right.png", (METALL_WIDTH,METALL_HEIGHT))
 metall_image_left = load_image("metall-left.png", (METALL_WIDTH,METALL_HEIGHT))
+metall_image_guard_right = load_image("metall-right-guard.png", (METALL_WIDTH,METALL_HEIGHT))
+metall_image_guard_left = load_image("metall-left-guard.png", (METALL_WIDTH,METALL_HEIGHT))
 metall_image_bullet = load_image("metall-bullet.png", (METALL_BULLET_WIDTH, METALL_BULLET_HEIGHT))
 health_image = load_image("health.png",(HEALTH_WIDTH,HEALTH_HEIGHT))
 
@@ -152,21 +154,31 @@ class Metall(pygame.Rect):
         self.health = 1
         self.bullets = []
         self.last_fired = pygame.time.get_ticks()
+        self.guarding = False
 
     def update_image(self):
         if self.direction == "right":
-            self.image = metall_image_right
+            if self.guarding:
+                self.image = metall_image_guard_right
+            else:
+                self.image = metall_image_right
         elif self.direction == "left":
-            self.image = metall_image_left
+            if self.guarding:
+                self.image = metall_image_guard_left
+            else:
+                self.image = metall_image_left
 
     def set_shooting(self):
         if abs(self.x - player.x) <= TILE_SIZE*4:
+            self.guarding = False
             now = pygame.time.get_ticks()
             if now - self.last_fired > 1000:
                 self.last_fired = now
                 self.bullets.append(Metall.Bullet(self,-METALL_BULLET_VELOCITY_Y))
                 self.bullets.append(Metall.Bullet(self,0))
                 self.bullets.append(Metall.Bullet(self,METALL_BULLET_VELOCITY_Y))
+        else:
+            self.guarding = True
 
 class Tile(pygame.Rect):
     def __init__(self,x,y,image):
