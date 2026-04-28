@@ -18,7 +18,6 @@ GRAVITY = 0.5
 FRICTION = 0.4
 PLAYER_VELOCITY_X = 5
 PLAYER_VELOCITY_Y = -10
-FLOOR_Y = GAME_HEIGHT * 3/4
 
 def load_image(image_name, scale=None):
     image = pygame.image.load(os.path.join("images",image_name))
@@ -82,6 +81,31 @@ def create_map():
         tile = Tile(TILE_SIZE*3, (i+10)*TILE_SIZE, floor_tile_image)
         tiles.append(tile)
 
+def check_tile_collision():
+    for tile in tiles:
+        if player.colliderect(tile):
+            return tile
+    return None
+
+def check_tile_collision_x():
+    tile = check_tile_collision()
+    if tile is not None:
+        if player.velocity_x < 0:
+            player.x = tile.x + tile.width
+        elif player.velocity_x > 0:
+            player.x = tile.x - player.width
+        player.velocity_x = 0
+
+def check_tile_collision_y():
+    tile = check_tile_collision()
+    if tile is not None:
+        if player.velocity_y < 0:
+            player.y = tile.y + tile.height
+        elif player.velocity_x > 0:
+            player.y = tile.y - player.height
+            player.jumping = False
+        player.velocity_y = 0
+
 def move():
     if player.direction == "left" and player.velocity_x < 0:
         player.velocity_x += FRICTION
@@ -96,12 +120,12 @@ def move():
     elif player.x + player.width > GAME_WIDTH:
         player.x = GAME_WIDTH - player.width
 
+    check_tile_collision_x()
+
     player.velocity_y += GRAVITY
     player.y += player.velocity_y
 
-    if player.y + player.height > FLOOR_Y:
-        player.y = FLOOR_Y - player.height
-        player.jumping = False
+    check_tile_collision_y()
 
 def draw():
     window.fill((20,18,167))
