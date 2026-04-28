@@ -206,7 +206,8 @@ def move():
                 metall.health -= 1
                 bullet.used = True
 
-    player.bullets = [bullet for bullet in player.bullets if not bullet.used]
+    player.bullets = [bullet for bullet in player.bullets if not bullet.used \
+                      and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
     metalls = [metall for metall in metalls if metall.health > 0]
 
     for metall in metalls:
@@ -274,6 +275,7 @@ while True:
 
     if keys[pygame.K_x] or keys[pygame.K_SPACE]:
         player.set_shooting()
+        # print(len(player.bullets))
 
     move()
     draw()
