@@ -74,6 +74,14 @@ def create_map():
         tile = Tile(player.x + i*TILE_SIZE, player.y + TILE_SIZE*2, floor_tile_image)
         tiles.append(tile)
 
+    for i in range(16):
+        tile = Tile(i*TILE_SIZE, player.y + TILE_SIZE*5, floor_tile_image)
+        tiles.append(tile)
+
+    for i in range(3):
+        tile = Tile(TILE_SIZE*3, (i+10)*TILE_SIZE, floor_tile_image)
+        tiles.append(tile)
+
 def move():
     if player.direction == "left" and player.velocity_x < 0:
         player.velocity_x += FRICTION
