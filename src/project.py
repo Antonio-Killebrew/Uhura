@@ -1,5 +1,6 @@
 import os
 import pygame
+import random
 from sys import exit
 
 TILE_SIZE = 32
@@ -36,6 +37,12 @@ METALL_BULLET_HEIGHT = METALL_BULLET_WIDTH
 METALL_BULLET_VELOCITY_X = 2
 METALL_BULLET_VELOCITY_Y = METALL_BULLET_VELOCITY_X
 
+LIFE_ENERGY_WIDTH = 20
+LIFE_ENERGY_HEIGHT = 24
+BIG_LIFE_ENERGY_WIDTH = 28
+BIG_LIFE_ENERGY_HEIGHT = 32
+ITEM_VELOCITY_Y = -11
+
 def load_image(image_name, scale=None):
     image = pygame.image.load(os.path.join("images",image_name))
     if scale is not None:
@@ -61,6 +68,8 @@ metall_image_guard_right = load_image("metall-right-guard.png", (METALL_WIDTH,ME
 metall_image_guard_left = load_image("metall-left-guard.png", (METALL_WIDTH,METALL_HEIGHT))
 metall_image_bullet = load_image("metall-bullet.png", (METALL_BULLET_WIDTH, METALL_BULLET_HEIGHT))
 health_image = load_image("health.png",(HEALTH_WIDTH,HEALTH_HEIGHT))
+life_energy_image = load_image("life-energy.png", (LIFE_ENERGY_WIDTH,LIFE_ENERGY_HEIGHT))
+big_life_energy_image = load_image("big-life-energy.png", (BIG_LIFE_ENERGY_WIDTH,BIG_LIFE_ENERGY_HEIGHT))
 
 pygame.init()
 window = pygame.display.set_mode((GAME_WIDTH,GAME_HEIGHT))
@@ -185,6 +194,12 @@ class Tile(pygame.Rect):
         pygame.Rect.__init__(self,x,y,TILE_SIZE,TILE_SIZE)
         self.image = image
 
+class Item(pygame.Rect):
+    def __init__(self,x,y,image):
+        pygame.Rect.__init__(self,x,y,image.get_width(),image.get_height())
+        self.image = image
+        self.velocity_y = ITEM_VELOCITY_Y
+
 def create_map():
     for i in range(4):
         tile = Tile(player.x + i*TILE_SIZE, player.y + TILE_SIZE*2, floor_tile_image)
@@ -227,6 +242,13 @@ def check_tile_collision_y(character):
             character.jumping = False
         character.velocity_y = 0
 
+def drop_item(character):
+    random_number = random.randint(1,100)
+    if 0 < random_number <= 20:
+        items.append(Item(character.x, character.y, big_life_energy_image))
+    elif 20 < random_number <=50:
+        items.append(Item(character.x, character.y, life_energy_image))
+
 def move():
     global metalls
     if player.direction == "left" and player.velocity_x < 0:
@@ -256,6 +278,8 @@ def move():
                 bullet.used = True
                 if not metall.guarding:
                     metall.health -= 1
+                    if metall.health <= 0:
+                        drop_item(metall)
 
     player.bullets = [bullet for bullet in player.bullets if not bullet.used \
                       and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
@@ -289,6 +313,10 @@ def move():
         metall.bullets = [bullet for bullet in metall.bullets if not bullet.used \
                           and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
 
+    for item in items:
+        item.velocity_y += GRAVITY
+        item.y += item.velocity_y
+
 def draw():
     window.fill((20,18,167))
     window.blit(background_image,(0,80))
@@ -308,6 +336,9 @@ def draw():
         for bullet in metall.bullets:
             window.blit(bullet.image, bullet)
 
+    for item in items:
+        window.blit(item.image, item)
+
     pygame.draw.rect(window, "black", (TILE_SIZE,TILE_SIZE,HEALTH_WIDTH,HEALTH_HEIGHT*player.max_health))
     for i in range(player.max_health - player.health, player.max_health):
         window.blit(health_image, (TILE_SIZE,TILE_SIZE+i*HEALTH_HEIGHT,HEALTH_WIDTH,HEALTH_HEIGHT))
@@ -315,6 +346,7 @@ def draw():
 player = Player()
 metalls = []
 tiles = []
+items = []
 create_map() 
 
 while True:
