@@ -31,6 +31,11 @@ HEALTH_HEIGHT = 4
 METALL_WIDTH = 36
 METALL_HEIGHT = 30
 
+METALL_BULLET_WIDTH = 12
+METALL_BULLET_HEIGHT = METALL_BULLET_WIDTH
+METALL_BULLET_VELOCITY_X = 2
+METALL_BULLET_VELOCITY_Y = METALL_BULLET_VELOCITY_X
+
 def load_image(image_name, scale=None):
     image = pygame.image.load(os.path.join("images",image_name))
     if scale is not None:
@@ -52,6 +57,7 @@ player_image_bullet = load_image("bullet.png", (PLAYER_BULLET_WIDTH,PLAYER_BULLE
 floor_tile_image = load_image("floor-tile.png", (TILE_SIZE,TILE_SIZE))
 metall_image_right = load_image("metall-right.png", (METALL_WIDTH,METALL_HEIGHT))
 metall_image_left = load_image("metall-left.png", (METALL_WIDTH,METALL_HEIGHT))
+metall_image_bullet = load_image("metall-bullet.png", (METALL_BULLET_WIDTH, METALL_BULLET_HEIGHT))
 health_image = load_image("health.png",(HEALTH_WIDTH,HEALTH_HEIGHT))
 
 pygame.init()
@@ -123,6 +129,20 @@ class Player(pygame.Rect):
             pygame.time.set_timer(SHOOTING_END, 250, 1)
 
 class Metall(pygame.Rect):
+    class Bullet(pygame.Rect):
+        def __init__(self, metall, velocity_y):
+            if metall.direction == "left":
+                pygame.Rect.__init__(self, metall.x, metall.y + TILE_SIZE/2,
+                                     METALL_BULLET_WIDTH, METALL_BULLET_HEIGHT)
+                self.velocity_x = -METALL_BULLET_VELOCITY_X
+            elif metall.direction == "right":
+                pygame.Rect.__init__(self, metall.width, metall.y + TILE_SIZE/2,
+                                     METALL_BULLET_WIDTH, METALL_BULLET_HEIGHT)
+                self.velocity_x = METALL_BULLET_VELOCITY_X
+            self.velocity_y = velocity_y
+            self.image = metall_image_bullet
+            self.used = False
+
     def __init__(self,x,y):
         pygame.Rect.__init__(self,x,y,METALL_WIDTH,METALL_HEIGHT)
         self.image = metall_image_left
@@ -130,12 +150,20 @@ class Metall(pygame.Rect):
         self.direction = "left"
         self.jumping = False
         self.health = 1
+        self.bullets = []
+        self.shooting = False
 
     def update_image(self):
         if self.direction == "right":
             self.image = metall_image_right
         elif self.direction == "left":
             self.image = metall_image_left
+
+    def set_shooting(self):
+        self.shooting = True
+        self.bullets.append(Metall.Bullet(self,-METALL_BULLET_VELOCITY_Y))
+        self.bullets.append(Metall.Bullet(self,0))
+        self.bullets.append(Metall.Bullet(self,METALL_BULLET_VELOCITY_Y))
 
 class Tile(pygame.Rect):
     def __init__(self,x,y,image):
@@ -233,6 +261,11 @@ def move():
             player.health -= 1
             player.set_invincible()
 
+        metall.set_shooting()
+        for bullet in metall.bullets:
+            bullet.x += bullet.velocity_x
+            bullet.y += bullet.velocity_y
+
 def draw():
     window.fill((20,18,167))
     window.blit(background_image,(0,80))
@@ -249,6 +282,8 @@ def draw():
     for metall in metalls:
         metall.update_image()
         window.blit(metall.image, metall)
+        for bullet in metall.bullets:
+            window.blit(bullet.image, bullet)
 
     pygame.draw.rect(window, "black", (TILE_SIZE,TILE_SIZE,HEALTH_WIDTH,HEALTH_HEIGHT*player.max_health))
     for i in range(player.max_health - player.health, player.max_health):
