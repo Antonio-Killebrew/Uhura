@@ -17,7 +17,7 @@ PLAYER_DISTANCE = 5
 GRAVITY = 0.5
 FRICTION = 0.4
 PLAYER_VELOCITY_X = 5
-PLAYER_VELOCITY_Y = -10
+PLAYER_VELOCITY_Y = -11
 
 def load_image(image_name, scale=None):
     image = pygame.image.load(os.path.join("images",image_name))
@@ -49,15 +49,11 @@ class Player(pygame.Rect):
 
     def update_image(self):
         if self.jumping:
-            self.width = PLAYER_JUMP_WIDTH
-            self.height = PLAYER_JUMP_HEIGHT
             if self.direction == "right":
                 self.image = player_image_jump_right
             elif self.direction == "left":
                 self.image = player_image_jump_left
         else:
-            self.width = PLAYER_WIDTH
-            self.height = PLAYER_HEIGHT
             if self.direction == "right":
                 self.image = player_image_right
             elif self.direction == "left":
@@ -101,7 +97,7 @@ def check_tile_collision_y():
     if tile is not None:
         if player.velocity_y < 0:
             player.y = tile.y + tile.height
-        elif player.velocity_x > 0:
+        elif player.velocity_y > 0:
             player.y = tile.y - player.height
             player.jumping = False
         player.velocity_y = 0
