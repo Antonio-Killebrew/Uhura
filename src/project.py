@@ -1,11 +1,15 @@
 import os
 import pygame
 import random
+import tile_map
 from sys import exit
 
 TILE_SIZE = 32
-GAME_WIDTH = 512
-GAME_HEIGHT = 512
+ROW_COUNT = 16
+COLUMN_COUNT = ROW_COUNT
+GAME_WIDTH = TILE_SIZE * COLUMN_COUNT
+GAME_HEIGHT = TILE_SIZE * COLUMN_COUNT
+GAME_MAP = tile_map.GAME_MAP1
 
 PLAYER_X = GAME_WIDTH/2
 PLAYER_Y = GAME_WIDTH/2
@@ -66,7 +70,17 @@ player_image_jump_shoot_right = load_image("megaman-right-jump-shoot.png",
 player_image_jump_shoot_left = load_image("megaman-left-jump-shoot.png",
                                       (PLAYER_JUMP_SHOOT_WIDTH, PLAYER_JUMP_HEIGHT))
 player_image_bullet = load_image("bullet.png", (PLAYER_BULLET_WIDTH,PLAYER_BULLET_HEIGHT))
+
 floor_tile_image = load_image("floor-tile.png", (TILE_SIZE,TILE_SIZE))
+wall_tile_image = load_image("wall-tile.png", (TILE_SIZE,TILE_SIZE))
+beam_tile_image = load_image("beam-tile.png", (TILE_SIZE,TILE_SIZE))
+rock_tile1_image = load_image("rock-tile1.png", (TILE_SIZE,TILE_SIZE))
+rock_tile2_image = load_image("rock-tile2.png", (TILE_SIZE,TILE_SIZE))
+rock_tile3_image = load_image("rock-tile3.png", (TILE_SIZE,TILE_SIZE))
+rock_tile4_image = load_image("rock-tile4.png", (TILE_SIZE,TILE_SIZE))
+door_tile_image = load_image("door-tile.png", (TILE_SIZE,TILE_SIZE))
+room_tile_image = load_image("room-tile.png", (TILE_SIZE,TILE_SIZE))
+
 metall_image_right = load_image("metall-right.png", (METALL_WIDTH,METALL_HEIGHT))
 metall_image_left = load_image("metall-left.png", (METALL_WIDTH,METALL_HEIGHT))
 metall_image_guard_right = load_image("metall-right-guard.png", (METALL_WIDTH,METALL_HEIGHT))
@@ -230,26 +244,37 @@ class Item(pygame.Rect):
         self.used = False
 
 def create_map():
-    bladers.append(Blader(TILE_SIZE*5,TILE_SIZE*5))
-    for i in range(4):
-        tile = Tile(player.x + i*TILE_SIZE, player.y + TILE_SIZE*2, floor_tile_image)
-        tiles.append(tile)
-
-    for i in range(50):
-        tile = Tile(i*TILE_SIZE, player.y + TILE_SIZE*5, floor_tile_image)
-        tiles.append(tile)
-
-    for i in range(3):
-        spike = Tile(i*TILE_SIZE, player.y + TILE_SIZE*4, spike_image)
-        spikes.append(spike)
-
-    for i in range(3):
-        tile = Tile(TILE_SIZE*3, (i+10)*TILE_SIZE, floor_tile_image)
-        tiles.append(tile)
-
-    for i in range(3):
-        metall = Metall(player.x + TILE_SIZE*(3+i*1.5),TILE_SIZE*6)
-        metalls.append(metall)
+    for row in range(len(GAME_MAP)):
+        for column in range(len(GAME_MAP[row])):
+            map_code = GAME_MAP[row][column]
+            x = column * TILE_SIZE
+            y = row * TILE_SIZE
+            if map_code == 0:
+                continue
+            elif map_code == 1:
+                tiles.append(Tile(x,y,rock_tile1_image))
+            elif map_code == 2:
+                tiles.append(Tile(x,y,rock_tile2_image))
+            elif map_code == 3:
+                tiles.append(Tile(x,y,rock_tile3_image))
+            elif map_code == 4:
+                tiles.append(Tile(x,y,rock_tile4_image))
+            elif map_code == 5:
+                tiles.append(Tile(x,y,floor_tile_image))
+            elif map_code == 6:
+                tiles.append(Tile(x,y,wall_tile_image))
+            elif map_code == 7:
+                background_tiles.append(Tile(x,y,beam_tile_image))
+            elif map_code == 8:
+                spikes.append(Tile(x,y,spike_image))
+            elif map_code == 9:
+                background_tiles.append(Tile(x,y,door_tile_image))
+            elif map_code == 10:
+                background_tiles.append(Tile(x,y,room_tile_image))
+            elif map_code == 11:
+                metalls.append(Metall(x,y))
+            elif map_code == 12:
+                bladers.append(Blader(x,y))
 
 def check_tile_collision(character):
     for tile in tiles:
@@ -290,6 +315,9 @@ def move_player_x(velocity_x):
         move_map_x(-velocity_x)
 
 def move_map_x(velocity_x):
+    for tile in background_tiles:
+        tile.x += velocity_x
+
     for tile in tiles:
         tile.x += velocity_x
 
@@ -419,6 +447,9 @@ def draw():
     window.fill((20,18,167))
     window.blit(background_image,(0,80))
 
+    for tile in background_tiles:
+        window.blit(tile.image, tile)
+
     for tile in tiles:
         window.blit(tile.image, tile)
 
@@ -451,6 +482,7 @@ def draw():
 player = Player()
 metalls = []
 tiles = []
+background_tiles = []
 items = []
 spikes = []
 bladers = []
