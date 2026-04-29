@@ -284,7 +284,7 @@ def drop_item(character):
         items.append(Item(character.x, character.y, life_energy_image))
 
 def move():
-    global metalls, items
+    global metalls, items, bladers
     if player.direction == "left" and player.velocity_x < 0:
         player.velocity_x += FRICTION
     elif player.direction == "right" and player.velocity_x > 0:
@@ -319,9 +319,17 @@ def move():
                     if metall.health <= 0:
                         drop_item(metall)
 
+        for blader in bladers:
+            if blader.health > 0 and not bullet.used and bullet.colliderect(blader):
+                bullet.used = True
+                blader.health -=1
+                if blader.health <= 0:
+                    drop_item(blader)
+
     player.bullets = [bullet for bullet in player.bullets if not bullet.used \
                       and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
     metalls = [metall for metall in metalls if metall.health > 0]
+    bladers = [blader for blader in bladers if blader.health > 0]
 
     for metall in metalls:
         if player.x < metall.x:
