@@ -351,6 +351,11 @@ def move():
         else:
             blader.x += blader.velocity_x
 
+        if abs(blader.y + blader.velocity_y - blader.start_y) >= blader.max_range_y:
+            blader.velocity_y *= -1
+        else:
+            blader.y += blader.velocity_y
+
     for item in items:
         item.velocity_y += GRAVITY
         item.y += item.velocity_y
