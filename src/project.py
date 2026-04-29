@@ -396,7 +396,7 @@ def move():
         check_tile_collision_y(metall)
 
         if not player.invincible and player.colliderect(metall):
-            print("collision with metall")
+            # print("collision with metall")
             player.health -= 1
             player.set_invincible()
 
