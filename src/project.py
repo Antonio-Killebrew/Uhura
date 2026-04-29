@@ -210,6 +210,12 @@ class Blader(pygame.Rect):
         self.max_range_x = TILE_SIZE*4
         self.max_range_y = TILE_SIZE
 
+    def update_image(self):
+        if self.direction == "right":
+            self.image = blader_image_right
+        elif self.direction == "left":
+            self.image = blader_image_left
+
 class Tile(pygame.Rect):
     def __init__(self,x,y,image):
         pygame.Rect.__init__(self,x,y,TILE_SIZE,TILE_SIZE)
@@ -348,6 +354,10 @@ def move():
     for blader in bladers:
         if abs(blader.x + blader.velocity_x - blader.start_x) >= blader.max_range_x:
             blader.velocity_x *= -1
+            if blader.velocity_x < 0:
+                blader.direction = "left"
+            elif blader.velocity_x > 0:
+                blader.direction = "right"
         else:
             blader.x += blader.velocity_x
 
@@ -355,6 +365,10 @@ def move():
             blader.velocity_y *= -1
         else:
             blader.y += blader.velocity_y
+
+        if not player.invincible and player.colliderect(blader):
+            player.health -= 1
+            player.set_invincible()
 
     for item in items:
         item.velocity_y += GRAVITY
@@ -391,6 +405,7 @@ def draw():
             window.blit(bullet.image, bullet)
 
     for blader in bladers:
+        blader.update_image()
         window.blit(blader.image, blader)
 
     for item in items:
