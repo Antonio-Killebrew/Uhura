@@ -283,22 +283,43 @@ def drop_item(character):
     elif 20 < random_number <=50:
         items.append(Item(character.x, character.y, life_energy_image))
 
+def move_player_x(velocity_x):
+    move_map_x(velocity_x)
+
+def move_map_x(velocity_x):
+    for tile in tiles:
+        tile.x += velocity_x
+
+    for metall in metalls:
+        metall.x += velocity_x
+        for bullet in metall.bullets:
+            bullet.x += velocity_x
+
+    for item in items:
+        item.x += velocity_x
+
+    for spike in spikes:
+        spike.x += velocity_x
+
+    for blader in bladers:
+        blader.x += velocity_x
+
 def move():
     global metalls, items, bladers
-    if player.direction == "left" and player.velocity_x < 0:
-        player.velocity_x += FRICTION
-    elif player.direction == "right" and player.velocity_x > 0:
-        player.velocity_x -= FRICTION
-    else:
-        player.velocity_x = 0
+    # if player.direction == "left" and player.velocity_x < 0:
+    #     player.velocity_x += FRICTION
+    # elif player.direction == "right" and player.velocity_x > 0:
+    #     player.velocity_x -= FRICTION
+    # else:
+    #     player.velocity_x = 0
 
-    player.x += player.velocity_x
-    if player.x < 0:
-        player.x = 0
-    elif player.x + player.width > GAME_WIDTH:
-        player.x = GAME_WIDTH - player.width
+    # player.x += player.velocity_x
+    # if player.x < 0:
+    #     player.x = 0
+    # elif player.x + player.width > GAME_WIDTH:
+    #     player.x = GAME_WIDTH - player.width
 
-    check_tile_collision_x(player)
+    # check_tile_collision_x(player)
 
     player.velocity_y += GRAVITY
     player.y += player.velocity_y
@@ -448,11 +469,13 @@ while True:
         player.jumping = True
 
     if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-        player.velocity_x = -PLAYER_VELOCITY_X
+        # player.velocity_x = -PLAYER_VELOCITY_X
+        move_player_x(PLAYER_VELOCITY_X)
         player.direction = "left"
 
     if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-        player.velocity_x = PLAYER_VELOCITY_X
+        # player.velocity_x = PLAYER_VELOCITY_X
+        move_player_x(-PLAYER_VELOCITY_X)
         player.direction = "right"
 
     if keys[pygame.K_x] or keys[pygame.K_SPACE]:
