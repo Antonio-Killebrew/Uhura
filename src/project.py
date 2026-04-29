@@ -70,6 +70,7 @@ metall_image_bullet = load_image("metall-bullet.png", (METALL_BULLET_WIDTH, META
 health_image = load_image("health.png",(HEALTH_WIDTH,HEALTH_HEIGHT))
 life_energy_image = load_image("life-energy.png", (LIFE_ENERGY_WIDTH,LIFE_ENERGY_HEIGHT))
 big_life_energy_image = load_image("big-life-energy.png", (BIG_LIFE_ENERGY_WIDTH,BIG_LIFE_ENERGY_HEIGHT))
+spike_image = load_image("spike.png", (TILE_SIZE,TILE_SIZE))
 
 pygame.init()
 window = pygame.display.set_mode((GAME_WIDTH,GAME_HEIGHT))
@@ -212,6 +213,10 @@ def create_map():
         tiles.append(tile)
 
     for i in range(3):
+        spike = Tile(i*TILE_SIZE, player.y + TILE_SIZE*4, spike_image)
+        spikes.append(spike)
+
+    for i in range(3):
         tile = Tile(TILE_SIZE*3, (i+10)*TILE_SIZE, floor_tile_image)
         tiles.append(tile)
 
@@ -272,6 +277,10 @@ def move():
     player.y += player.velocity_y
 
     check_tile_collision_y(player)
+
+    for spike in spikes:
+        if player.colliderect(spike):
+            player.health = 0
 
     for bullet in player.bullets:
         bullet.x += bullet.velocity_x
@@ -334,6 +343,9 @@ def draw():
     for tile in tiles:
         window.blit(tile.image, tile)
 
+    for spike in spikes:
+        window.blit(spike.image, spike)
+
     player.update_image()
     window.blit(player.image,player)
 
@@ -357,6 +369,7 @@ player = Player()
 metalls = []
 tiles = []
 items = []
+spikes = []
 create_map() 
 
 while True:
