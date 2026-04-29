@@ -205,6 +205,10 @@ class Blader(pygame.Rect):
         self.health = 3
         self.velocity_x = BLADER_VELOCITY_X
         self.velocity_y = BLADER_VELOCITY_Y
+        self.start_x = x
+        self.start_y = y
+        self.max_range_x = TILE_SIZE*4
+        self.max_range_y = TILE_SIZE
 
 class Tile(pygame.Rect):
     def __init__(self,x,y,image):
@@ -342,8 +346,10 @@ def move():
                           and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
 
     for blader in bladers:
-        blader.x += blader.velocity_x
-        blader.y += blader.velocity_y
+        if abs(blader.x + blader.velocity_x - blader.start_x) >= blader.max_range_x:
+            blader.velocity_x *= -1
+        else:
+            blader.x += blader.velocity_x
 
     for item in items:
         item.velocity_y += GRAVITY
