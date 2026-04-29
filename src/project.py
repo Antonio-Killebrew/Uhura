@@ -243,6 +243,13 @@ class Item(pygame.Rect):
         self.velocity_y = ITEM_VELOCITY_Y
         self.used = False
 
+def append_tiles(map_code, tile):
+    if map_code < 0:
+        background_tiles.append(tile)
+    else:
+        tiles.append(tile)
+
+
 def create_map():
     for row in range(len(GAME_MAP)):
         for column in range(len(GAME_MAP[row])):
@@ -251,18 +258,18 @@ def create_map():
             y = row * TILE_SIZE
             if map_code == 0:
                 continue
-            elif map_code == 1:
-                tiles.append(Tile(x,y,rock_tile1_image))
-            elif map_code == 2:
-                tiles.append(Tile(x,y,rock_tile2_image))
-            elif map_code == 3:
-                tiles.append(Tile(x,y,rock_tile3_image))
-            elif map_code == 4:
-                tiles.append(Tile(x,y,rock_tile4_image))
-            elif map_code == 5:
-                tiles.append(Tile(x,y,floor_tile_image))
-            elif map_code == 6:
-                tiles.append(Tile(x,y,wall_tile_image))
+            elif abs(map_code) == 1:
+                append_tiles(map_code, Tile(x,y,rock_tile1_image))
+            elif abs(map_code) == 2:
+                append_tiles(map_code, Tile(x,y,rock_tile2_image))
+            elif abs(map_code) == 3:
+                append_tiles(map_code, Tile(x,y,rock_tile3_image))
+            elif abs(map_code) == 4:
+                append_tiles(map_code, Tile(x,y,rock_tile4_image))
+            elif abs(map_code) == 5:
+                append_tiles(map_code, Tile(x,y,floor_tile_image))
+            elif abs(map_code) == 6:
+                append_tiles(map_code, Tile(x,y,wall_tile_image))
             elif map_code == 7:
                 background_tiles.append(Tile(x,y,beam_tile_image))
             elif map_code == 8:
