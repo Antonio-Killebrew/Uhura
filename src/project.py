@@ -37,6 +37,11 @@ METALL_BULLET_HEIGHT = METALL_BULLET_WIDTH
 METALL_BULLET_VELOCITY_X = 2
 METALL_BULLET_VELOCITY_Y = METALL_BULLET_VELOCITY_X
 
+BLADER_WIDTH = 32
+BLADER_HEIGHT = 40
+BLADER_VELOCITY_X = 4
+BLADER_VELOCITY_Y = 2
+
 LIFE_ENERGY_WIDTH = 20
 LIFE_ENERGY_HEIGHT = 24
 BIG_LIFE_ENERGY_WIDTH = 28
@@ -71,6 +76,8 @@ health_image = load_image("health.png",(HEALTH_WIDTH,HEALTH_HEIGHT))
 life_energy_image = load_image("life-energy.png", (LIFE_ENERGY_WIDTH,LIFE_ENERGY_HEIGHT))
 big_life_energy_image = load_image("big-life-energy.png", (BIG_LIFE_ENERGY_WIDTH,BIG_LIFE_ENERGY_HEIGHT))
 spike_image = load_image("spike.png", (TILE_SIZE,TILE_SIZE))
+blader_image_right = load_image("blader-right.png",(BLADER_WIDTH,BLADER_HEIGHT))
+blader_image_left = load_image("blader-left.png", (BLADER_WIDTH,BLADER_HEIGHT))
 
 pygame.init()
 window = pygame.display.set_mode((GAME_WIDTH,GAME_HEIGHT))
@@ -190,6 +197,15 @@ class Metall(pygame.Rect):
         else:
             self.guarding = True
 
+class Blader(pygame.Rect):
+    def __init__(self,x,y):
+        pygame.Rect.__init__(self,x,y,BLADER_WIDTH,BLADER_HEIGHT)
+        self.image = blader_image_right
+        self.direction = "right"
+        self.health = 3
+        self.velocity_x = BLADER_VELOCITY_X
+        self.velocity_y = BLADER_VELOCITY_Y
+
 class Tile(pygame.Rect):
     def __init__(self,x,y,image):
         pygame.Rect.__init__(self,x,y,TILE_SIZE,TILE_SIZE)
@@ -204,6 +220,7 @@ class Item(pygame.Rect):
         self.used = False
 
 def create_map():
+    bladers.append(Blader(TILE_SIZE*5,TILE_SIZE*5))
     for i in range(4):
         tile = Tile(player.x + i*TILE_SIZE, player.y + TILE_SIZE*2, floor_tile_image)
         tiles.append(tile)
@@ -324,6 +341,10 @@ def move():
         metall.bullets = [bullet for bullet in metall.bullets if not bullet.used \
                           and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
 
+    for blader in bladers:
+        blader.x += blader.velocity_x
+        blader.y += blader.velocity_y
+
     for item in items:
         item.velocity_y += GRAVITY
         item.y += item.velocity_y
@@ -358,6 +379,9 @@ def draw():
         for bullet in metall.bullets:
             window.blit(bullet.image, bullet)
 
+    for blader in bladers:
+        window.blit(blader.image, blader)
+
     for item in items:
         window.blit(item.image, item)
 
@@ -370,6 +394,7 @@ metalls = []
 tiles = []
 items = []
 spikes = []
+bladers = []
 create_map() 
 
 while True:
