@@ -457,12 +457,18 @@ def draw():
     window.blit(background_image,(0,80))
 
     for tile in background_tiles:
+        if tile.x > GAME_WIDTH:
+            break
         window.blit(tile.image, tile)
 
     for tile in tiles:
+        if tile.x > GAME_WIDTH:
+            break
         window.blit(tile.image, tile)
 
     for spike in spikes:
+        if spike.x > GAME_WIDTH:
+            break
         window.blit(spike.image, spike)
 
     player.update_image()
@@ -472,16 +478,22 @@ def draw():
         window.blit(bullet.image, bullet)
 
     for metall in metalls:
+        if metall.x > GAME_WIDTH:
+            break
         metall.update_image()
         window.blit(metall.image, metall)
         for bullet in metall.bullets:
             window.blit(bullet.image, bullet)
 
     for blader in bladers:
+        if blader.x > GAME_WIDTH:
+            break
         blader.update_image()
         window.blit(blader.image, blader)
 
     for item in items:
+        if item.x > GAME_WIDTH:
+            break
         window.blit(item.image, item)
 
     pygame.draw.rect(window, "black", (TILE_SIZE,TILE_SIZE,HEALTH_WIDTH,HEALTH_HEIGHT*player.max_health))
