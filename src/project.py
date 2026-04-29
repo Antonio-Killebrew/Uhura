@@ -235,7 +235,7 @@ def create_map():
         tile = Tile(player.x + i*TILE_SIZE, player.y + TILE_SIZE*2, floor_tile_image)
         tiles.append(tile)
 
-    for i in range(16):
+    for i in range(50):
         tile = Tile(i*TILE_SIZE, player.y + TILE_SIZE*5, floor_tile_image)
         tiles.append(tile)
 
@@ -285,6 +285,9 @@ def drop_item(character):
 
 def move_player_x(velocity_x):
     move_map_x(velocity_x)
+    tile = check_tile_collision(player)
+    if tile is not None:
+        move_map_x(-velocity_x)
 
 def move_map_x(velocity_x):
     for tile in tiles:
@@ -302,6 +305,7 @@ def move_map_x(velocity_x):
         spike.x += velocity_x
 
     for blader in bladers:
+        blader.start_x += velocity_x
         blader.x += velocity_x
 
 def move():
