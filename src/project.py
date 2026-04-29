@@ -251,8 +251,8 @@ def append_tiles(map_code, tile):
 
 
 def create_map():
-    for row in range(len(GAME_MAP)):
-        for column in range(len(GAME_MAP[row])):
+    for column in range(len(GAME_MAP[0])):
+        for row in range(len(GAME_MAP)):
             map_code = GAME_MAP[row][column]
             x = column * TILE_SIZE
             y = row * TILE_SIZE
@@ -287,6 +287,8 @@ def check_tile_collision(character):
     for tile in tiles:
         if character.colliderect(tile):
             return tile
+        elif tile.x - character.x > GAME_WIDTH:
+            return None
     return None
 
 def check_tile_collision_x(character):
