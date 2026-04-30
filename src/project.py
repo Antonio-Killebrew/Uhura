@@ -89,6 +89,7 @@ metall_image_bullet = load_image("metall-bullet.png", (METALL_BULLET_WIDTH, META
 health_image = load_image("health.png",(HEALTH_WIDTH,HEALTH_HEIGHT))
 life_energy_image = load_image("life-energy.png", (LIFE_ENERGY_WIDTH,LIFE_ENERGY_HEIGHT))
 big_life_energy_image = load_image("big-life-energy.png", (BIG_LIFE_ENERGY_WIDTH,BIG_LIFE_ENERGY_HEIGHT))
+score_ball_image = load_image("score-ball.png", (TILE_SIZE/2, TILE_SIZE/2))
 spike_image = load_image("spike.png", (TILE_SIZE,TILE_SIZE))
 blader_image_right = load_image("blader-right.png",(BLADER_WIDTH,BLADER_HEIGHT))
 blader_image_left = load_image("blader-left.png", (BLADER_WIDTH,BLADER_HEIGHT))
@@ -320,6 +321,8 @@ def drop_item(character):
         items.append(Item(character.x, character.y, big_life_energy_image))
     elif 20 < random_number <=50:
         items.append(Item(character.x, character.y, life_energy_image))
+    elif 50 < random_number <= 75:
+        items.append(Item(character.x, character.y, score_ball_image))
 
 def move_player_x(velocity_x):
     move_map_x(velocity_x)
@@ -476,6 +479,8 @@ def move():
                 player.health = min(player.health + 2, player.max_health)
             elif item.image == big_life_energy_image:
                 player.health = min(player.health + 8, player.max_health)
+            elif item.image == score_ball_image:
+                player.score += 1000
     items = [item for item in items if not item.used]
 
 def draw():
