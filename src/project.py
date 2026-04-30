@@ -98,6 +98,8 @@ window = pygame.display.set_mode((GAME_WIDTH,GAME_HEIGHT))
 pygame.display.set_caption("Uhura")
 pygame.display.set_icon(player_image_right)
 clock = pygame.time.Clock()
+pygame.font.init()
+game_font = pygame.font.SysFont("Arial", 24)
 
 INVINCIBLE_END = pygame.USEREVENT + 0
 SHOOTING_END = pygame.USEREVENT + 1
@@ -128,6 +130,7 @@ class Player(pygame.Rect):
         self.health = self.max_health
         self.shooting = False
         self.bullets = []
+        self.score = 0
 
     def update_image(self):
         if self.jumping and self.shooting:
@@ -384,6 +387,7 @@ def move():
                     if metall.health <= 0:
                         drop_item(metall)
                         metall_bullets.extend(metall.bullets)
+                        player.score += 500
 
         for blader in bladers:
             if blader.health > 0 and not bullet.used and bullet.colliderect(blader):
@@ -391,6 +395,7 @@ def move():
                 blader.health -=1
                 if blader.health <= 0:
                     drop_item(blader)
+                    player.score += 500
 
     player.bullets = [bullet for bullet in player.bullets if not bullet.used \
                       and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
@@ -522,6 +527,10 @@ def draw():
     pygame.draw.rect(window, "black", (TILE_SIZE,TILE_SIZE,HEALTH_WIDTH,HEALTH_HEIGHT*player.max_health))
     for i in range(player.max_health - player.health, player.max_health):
         window.blit(health_image, (TILE_SIZE,TILE_SIZE+i*HEALTH_HEIGHT,HEALTH_WIDTH,HEALTH_HEIGHT))
+
+    text_score = str(player.score)
+    text_surface = game_font.render(text_score, False,"white")
+    window.blit(text_surface, (GAME_WIDTH/2, TILE_SIZE/2))
 
 player = Player()
 metalls = []
