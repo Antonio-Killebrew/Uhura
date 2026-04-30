@@ -527,10 +527,9 @@ def draw():
         window.blit(bullet.image, bullet)
 
     for metall in metalls:
-        if metall.x > GAME_WIDTH:
-            break
-        metall.update_image()
-        window.blit(metall.image, metall)
+        if metall.x <= GAME_WIDTH:
+            metall.update_image()
+            window.blit(metall.image, metall)
         for bullet in metall.bullets:
             window.blit(bullet.image, bullet)
 
