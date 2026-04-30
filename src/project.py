@@ -146,28 +146,52 @@ class Player(pygame.Rect):
         self.shooting = False
         self.bullets = []
         self.score = 0
+        self.walking = False
+        self.current_walk_index = 0
+        self.last_updated_walk_index = pygame.time.get_ticks()
 
     def update_image(self):
-        if self.jumping and self.shooting:
-            if self.direction == "right":
-                self.image = player_image_jump_shoot_right
-            elif self.direction == "left":
-                self.image = player_image_jump_shoot_left
-        elif self.shooting:
-            if self.direction == "right":
-                self.image = player_image_shoot_right
-            elif self.direction == "left":
-                self.image = player_image_shoot_left
-        elif self.jumping:
-            if self.direction == "right":
-                self.image = player_image_jump_right
-            elif self.direction == "left":
-                self.image = player_image_jump_left
+        if self.walking and not self.jumping:
+            if self.shooting:
+                if self.direction == "right":
+                    self.image = player_image_walk_shoot_right[self.current_walk_index]
+                elif self.direction == "left":
+                    self.image = player_image_walk_shoot_left[self.current_walk_index]
+            else:
+                if self.direction == "right":
+                    self.image = player_image_walk_right[self.current_walk_index]
+                elif self.direction == "left":
+                    self.image = player_image_walk_left[self.current_walk_index]
+            self.update_walking_animation()
         else:
-            if self.direction == "right":
-                self.image = player_image_right
-            elif self.direction == "left":
-                self.image = player_image_left
+            self.current_walk_index = 0
+
+            if self.jumping and self.shooting:
+                if self.direction == "right":
+                    self.image = player_image_jump_shoot_right
+                elif self.direction == "left":
+                    self.image = player_image_jump_shoot_left
+            elif self.shooting:
+                if self.direction == "right":
+                    self.image = player_image_shoot_right
+                elif self.direction == "left":
+                    self.image = player_image_shoot_left
+            elif self.jumping:
+                if self.direction == "right":
+                    self.image = player_image_jump_right
+                elif self.direction == "left":
+                    self.image = player_image_jump_left
+            else:
+                if self.direction == "right":
+                    self.image = player_image_right
+                elif self.direction == "left":
+                    self.image = player_image_left
+
+    def update_walking_animation(self):
+        now = pygame.time.get_ticks()
+        if now - self.last_updated_walk_index > 250:
+            self.last_updated_walk_index = now
+            self.current_walk_index = (self.current_walk_index + 1) % len(player_image_walk_right)
 
     def set_invincible(self,milliseconds=1000):
         self.invincible = True
@@ -603,6 +627,11 @@ while True:
     if keys[pygame.K_UP] or keys[pygame.K_w] and not player.jumping:
         player.velocity_y = PLAYER_VELOCITY_Y
         player.jumping = True
+
+    if keys[pygame.K_LEFT] or keys[pygame.K_a] or keys[pygame.K_RIGHT] or keys [pygame.K_d]:
+        player.walking = True
+    else:
+        player.walking = False
 
     if keys[pygame.K_LEFT] or keys[pygame.K_a]:
         # player.velocity_x = -PLAYER_VELOCITY_X
