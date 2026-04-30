@@ -19,6 +19,9 @@ PLAYER_JUMP_WIDTH = 52
 PLAYER_JUMP_HEIGHT = 60
 PLAYER_SHOOT_WIDTH = 62
 PLAYER_JUMP_SHOOT_WIDTH = 58
+PLAYER_WALK_WIDTH = 48
+PLAYER_WALK_HEIGHT = 48
+PLAYER_WALK_SHOOT_WIDTH = 62
 PLAYER_DISTANCE = 5
 
 GRAVITY = 0.5
@@ -70,6 +73,15 @@ player_image_jump_shoot_right = load_image("megaman-right-jump-shoot.png",
 player_image_jump_shoot_left = load_image("megaman-left-jump-shoot.png",
                                       (PLAYER_JUMP_SHOOT_WIDTH, PLAYER_JUMP_HEIGHT))
 player_image_bullet = load_image("bullet.png", (PLAYER_BULLET_WIDTH,PLAYER_BULLET_HEIGHT))
+
+player_image_walk_right = [load_image(f"megaman-right-walk{i}.png",
+                                      (PLAYER_WALK_WIDTH, PLAYER_WALK_HEIGHT)) for i in range(4)]
+player_image_walk_left = [load_image(f"megaman-left-walk{i}.png",
+                                      (PLAYER_WALK_WIDTH, PLAYER_WALK_HEIGHT)) for i in range(4)]
+player_image_walk_shoot_right = [load_image(f"megaman-right-walk-shoot{i}.png",
+                                      (PLAYER_WALK_SHOOT_WIDTH, PLAYER_WALK_HEIGHT)) for i in range(4)]
+player_image_walk_shoot_left = [load_image(f"megaman-left-walk-shoot{i}.png",
+                                      (PLAYER_WALK_SHOOT_WIDTH, PLAYER_WALK_HEIGHT)) for i in range(4)]
 
 floor_tile_image = load_image("floor-tile.png", (TILE_SIZE,TILE_SIZE))
 wall_tile_image = load_image("wall-tile.png", (TILE_SIZE,TILE_SIZE))
