@@ -99,7 +99,8 @@ pygame.display.set_caption("Uhura")
 pygame.display.set_icon(player_image_right)
 clock = pygame.time.Clock()
 pygame.font.init()
-game_font = pygame.font.SysFont("Arial", 24)
+# game_font = pygame.font.SysFont("Arial", 24)
+game_font = pygame.font.Font("./megaman-game-font.otf", 24)
 
 INVINCIBLE_END = pygame.USEREVENT + 0
 SHOOTING_END = pygame.USEREVENT + 1
@@ -529,6 +530,8 @@ def draw():
         window.blit(health_image, (TILE_SIZE,TILE_SIZE+i*HEALTH_HEIGHT,HEALTH_WIDTH,HEALTH_HEIGHT))
 
     text_score = str(player.score)
+    while len(text_score) < 7:
+        text_score = "0" + text_score
     text_surface = game_font.render(text_score, False,"white")
     window.blit(text_surface, (GAME_WIDTH/2, TILE_SIZE/2))
 
