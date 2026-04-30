@@ -335,6 +335,9 @@ def move_map_x(velocity_x):
         for bullet in metall.bullets:
             bullet.x += velocity_x
 
+    for bullet in metall_bullets:
+        bullet.x += velocity_x
+
     for item in items:
         item.x += velocity_x
 
@@ -346,7 +349,7 @@ def move_map_x(velocity_x):
         blader.x += velocity_x
 
 def move():
-    global metalls, items, bladers
+    global metalls, items, bladers, metall_bullets
     # if player.direction == "left" and player.velocity_x < 0:
     #     player.velocity_x += FRICTION
     # elif player.direction == "right" and player.velocity_x > 0:
@@ -380,6 +383,7 @@ def move():
                     metall.health -= 1
                     if metall.health <= 0:
                         drop_item(metall)
+                        metall_bullets.extend(metall.bullets)
 
         for blader in bladers:
             if blader.health > 0 and not bullet.used and bullet.colliderect(blader):
@@ -418,8 +422,24 @@ def move():
                 bullet.used = True
                 player.set_invincible()
 
+        
+
         metall.bullets = [bullet for bullet in metall.bullets if not bullet.used \
                           and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
+
+    for bullet in metall_bullets:
+        bullet.x += bullet.velocity_x
+        bullet.y += bullet.velocity_y
+        if not player.invincible and player.colliderect(bullet):
+            player.health -= 2
+            bullet.used = True
+            player.set_invincible()
+
+    
+
+    metall_bullets = [bullet for bullet in metall_bullets if not bullet.used \
+                        and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
+
 
     for blader in bladers:
         if abs(blader.x + blader.velocity_x - blader.start_x) >= blader.max_range_x:
@@ -485,6 +505,9 @@ def draw():
         for bullet in metall.bullets:
             window.blit(bullet.image, bullet)
 
+    for bullet in metall_bullets:
+        window.blit(bullet.image, bullet)
+
     for blader in bladers:
         if blader.x > GAME_WIDTH:
             break
@@ -502,6 +525,7 @@ def draw():
 
 player = Player()
 metalls = []
+metall_bullets = []
 tiles = []
 background_tiles = []
 items = []
