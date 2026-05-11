@@ -40,41 +40,42 @@ pip install pygame-ce
 
 ### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+* Clone the repository:
+```
+git clone https://github.com/Antonio-Killebrew/Uhura.git
+```
+* Navigate into the project directory:
+```
+cd Uhura
+cd src
+```
 
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
+* Run the game
 ```
-code blocks for commands
+python project.py
 ```
 
 ## Help
 
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
+Controls
+| Action        | Input                            |
+| ----------    | -------------------------------- |
+| Move Left     | A / Left Arrow                   |
+| Move Right    | D / Right Arrow                  |
+| Jump          | W / Up Arrow                     |
+| Shoot         | Space                            |
+| Exit Game     | ESC                              |
+| Restart Game  | Enter                            |
 
-## Authors
 
-Contributors names and contact info
+## Author
 
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
-
-## Version History
-
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
-* 0.1
-    * Initial Release
-
-## License
-
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+Antonio (Tony) Killebrew
+https://tonykillebrew.com
 
 ## Acknowledgments
+
+Thank you to Kenny Yip Coding on YouTube for providing Pygame tutorials.
+https://www.youtube.com/@KennyYipCoding
