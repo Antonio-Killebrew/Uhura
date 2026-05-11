@@ -44,10 +44,10 @@ SOBER_BULLET_HEIGHT = SOBER_BULLET_WIDTH
 SOBER_BULLET_VELOCITY_X = 2
 SOBER_BULLET_VELOCITY_Y = SOBER_BULLET_VELOCITY_X
 
-BLADER_WIDTH = 32
-BLADER_HEIGHT = 40
-BLADER_VELOCITY_X = 4
-BLADER_VELOCITY_Y = 2
+HEARTY_WIDTH = 32
+HEARTY_HEIGHT = 40
+HEARTY_VELOCITY_X = 4
+HEARTY_VELOCITY_Y = 2
 
 LIFE_ENERGY_WIDTH = 20
 LIFE_ENERGY_HEIGHT = 24
@@ -103,8 +103,8 @@ life_energy_image = load_image("life-energy.png", (LIFE_ENERGY_WIDTH,LIFE_ENERGY
 big_life_energy_image = load_image("big-life-energy.png", (BIG_LIFE_ENERGY_WIDTH,BIG_LIFE_ENERGY_HEIGHT))
 score_ball_image = load_image("score-ball.png", (TILE_SIZE/2, TILE_SIZE/2))
 spike_image = load_image("spike.png", (TILE_SIZE,TILE_SIZE))
-blader_image_right = load_image("blader-right.png",(BLADER_WIDTH,BLADER_HEIGHT))
-blader_image_left = load_image("blader-left.png", (BLADER_WIDTH,BLADER_HEIGHT))
+hearty_image_right = load_image("hearty-right.png",(HEARTY_WIDTH,HEARTY_HEIGHT))
+hearty_image_left = load_image("hearty-left.png", (HEARTY_WIDTH,HEARTY_HEIGHT))
 
 pygame.init()
 window = pygame.display.set_mode((GAME_WIDTH,GAME_HEIGHT))
@@ -253,14 +253,14 @@ class Sober(pygame.Rect):
         else:
             self.guarding = True
 
-class Blader(pygame.Rect):
+class Hearty(pygame.Rect):
     def __init__(self,x,y):
-        pygame.Rect.__init__(self,x,y,BLADER_WIDTH,BLADER_HEIGHT)
-        self.image = blader_image_right
+        pygame.Rect.__init__(self,x,y,HEARTY_WIDTH,HEARTY_HEIGHT)
+        self.image = hearty_image_right
         self.direction = "right"
         self.health = 3
-        self.velocity_x = BLADER_VELOCITY_X
-        self.velocity_y = BLADER_VELOCITY_Y
+        self.velocity_x = HEARTY_VELOCITY_X
+        self.velocity_y = HEARTY_VELOCITY_Y
         self.start_x = x
         self.start_y = y
         self.max_range_x = TILE_SIZE*4
@@ -268,9 +268,9 @@ class Blader(pygame.Rect):
 
     def update_image(self):
         if self.direction == "right":
-            self.image = blader_image_right
+            self.image = hearty_image_right
         elif self.direction == "left":
-            self.image = blader_image_left
+            self.image = hearty_image_left
 
 class Tile(pygame.Rect):
     def __init__(self,x,y,image):
@@ -323,11 +323,11 @@ def create_map():
             elif map_code == 11:
                 sobers.append(Sober(x,y))
             elif map_code == 12:
-                bladers.append(Blader(x,y))
+                heartys.append(Hearty(x,y))
 
 def reset_game():
     global player, sobers, sober_bullets, tiles, background_tiles,\
-    items, spikes, bladers, game_over
+    items, spikes, heartys, game_over
     player = Player()
     sobers = []
     sober_bullets = []
@@ -335,7 +335,7 @@ def reset_game():
     background_tiles = []
     items = []
     spikes = []
-    bladers = []
+    heartys = []
     create_map()
     game_over = False
 
@@ -402,12 +402,12 @@ def move_map_x(velocity_x):
     for spike in spikes:
         spike.x += velocity_x
 
-    for blader in bladers:
-        blader.start_x += velocity_x
-        blader.x += velocity_x
+    for hearty in heartys:
+        hearty.start_x += velocity_x
+        hearty.x += velocity_x
 
 def move():
-    global sobers, items, bladers, sober_bullets, game_over
+    global sobers, items, heartys, sober_bullets, game_over
     # if player.direction == "left" and player.velocity_x < 0:
     #     player.velocity_x += FRICTION
     # elif player.direction == "right" and player.velocity_x > 0:
@@ -444,18 +444,18 @@ def move():
                         sober_bullets.extend(sober.bullets)
                         player.score += 500
 
-        for blader in bladers:
-            if blader.health > 0 and not bullet.used and bullet.colliderect(blader):
+        for hearty in heartys:
+            if hearty.health > 0 and not bullet.used and bullet.colliderect(hearty):
                 bullet.used = True
-                blader.health -=1
-                if blader.health <= 0:
-                    drop_item(blader)
+                hearty.health -=1
+                if hearty.health <= 0:
+                    drop_item(hearty)
                     player.score += 500
 
     player.bullets = [bullet for bullet in player.bullets if not bullet.used \
                       and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
     sobers = [sober for sober in sobers if sober.health > 0]
-    bladers = [blader for blader in bladers if blader.health > 0]
+    heartys = [hearty for hearty in heartys if hearty.health > 0]
 
     for sober in sobers:
         if player.x < sober.x:
@@ -501,22 +501,22 @@ def move():
                         and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
 
 
-    for blader in bladers:
-        if abs(blader.x + blader.velocity_x - blader.start_x) >= blader.max_range_x:
-            blader.velocity_x *= -1
-            if blader.velocity_x < 0:
-                blader.direction = "left"
-            elif blader.velocity_x > 0:
-                blader.direction = "right"
+    for hearty in heartys:
+        if abs(hearty.x + hearty.velocity_x - hearty.start_x) >= hearty.max_range_x:
+            hearty.velocity_x *= -1
+            if hearty.velocity_x < 0:
+                hearty.direction = "left"
+            elif hearty.velocity_x > 0:
+                hearty.direction = "right"
         else:
-            blader.x += blader.velocity_x
+            hearty.x += hearty.velocity_x
 
-        if abs(blader.y + blader.velocity_y - blader.start_y) >= blader.max_range_y:
-            blader.velocity_y *= -1
+        if abs(hearty.y + hearty.velocity_y - hearty.start_y) >= hearty.max_range_y:
+            hearty.velocity_y *= -1
         else:
-            blader.y += blader.velocity_y
+            hearty.y += hearty.velocity_y
 
-        if not player.invincible and player.colliderect(blader):
+        if not player.invincible and player.colliderect(hearty):
             player.health -= 1
             player.set_invincible()
 
@@ -572,11 +572,11 @@ def draw():
     for bullet in sober_bullets:
         window.blit(bullet.image, bullet)
 
-    for blader in bladers:
-        if blader.x > GAME_WIDTH:
+    for hearty in heartys:
+        if hearty.x > GAME_WIDTH:
             break
-        blader.update_image()
-        window.blit(blader.image, blader)
+        hearty.update_image()
+        window.blit(hearty.image, hearty)
 
     for item in items:
         if item.x > GAME_WIDTH:
@@ -606,7 +606,7 @@ tiles = []
 background_tiles = []
 items = []
 spikes = []
-bladers = []
+heartys = []
 create_map() 
 
 while True:
