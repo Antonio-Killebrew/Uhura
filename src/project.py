@@ -62,25 +62,25 @@ def load_image(image_name, scale=None):
     return image
 
 background_image = load_image("background.png")
-player_image_right = load_image("megaman-right.png", (PLAYER_WIDTH, PLAYER_HEIGHT))
-player_image_left = load_image("megaman-left.png",(PLAYER_WIDTH, PLAYER_HEIGHT))
-player_image_jump_right = load_image("megaman-right-jump.png",(PLAYER_JUMP_WIDTH,PLAYER_JUMP_HEIGHT))
-player_image_jump_left = load_image("megaman-left-jump.png",(PLAYER_JUMP_WIDTH,PLAYER_JUMP_HEIGHT))
-player_image_shoot_right = load_image("megaman-right-shoot.png",(PLAYER_SHOOT_WIDTH,PLAYER_HEIGHT))
-player_image_shoot_left = load_image("megaman-left-shoot.png",(PLAYER_SHOOT_WIDTH,PLAYER_HEIGHT))
-player_image_jump_shoot_right = load_image("megaman-right-jump-shoot.png",
+player_image_right = load_image("uhura-right.png", (PLAYER_WIDTH, PLAYER_HEIGHT))
+player_image_left = load_image("uhura-left.png",(PLAYER_WIDTH, PLAYER_HEIGHT))
+player_image_jump_right = load_image("uhura-right-jump.png",(PLAYER_JUMP_WIDTH,PLAYER_JUMP_HEIGHT))
+player_image_jump_left = load_image("uhura-left-jump.png",(PLAYER_JUMP_WIDTH,PLAYER_JUMP_HEIGHT))
+player_image_shoot_right = load_image("uhura-right-shoot.png",(PLAYER_SHOOT_WIDTH,PLAYER_HEIGHT))
+player_image_shoot_left = load_image("uhura-left-shoot.png",(PLAYER_SHOOT_WIDTH,PLAYER_HEIGHT))
+player_image_jump_shoot_right = load_image("uhura-right-jump-shoot.png",
                                       (PLAYER_JUMP_SHOOT_WIDTH, PLAYER_JUMP_HEIGHT))
-player_image_jump_shoot_left = load_image("megaman-left-jump-shoot.png",
+player_image_jump_shoot_left = load_image("uhura-left-jump-shoot.png",
                                       (PLAYER_JUMP_SHOOT_WIDTH, PLAYER_JUMP_HEIGHT))
 player_image_bullet = load_image("bullet.png", (PLAYER_BULLET_WIDTH,PLAYER_BULLET_HEIGHT))
 
-player_image_walk_right = [load_image(f"megaman-right-walk{i}.png",
+player_image_walk_right = [load_image(f"uhura-right-walk{i}.png",
                                       (PLAYER_WALK_WIDTH, PLAYER_WALK_HEIGHT)) for i in range(4)]
-player_image_walk_left = [load_image(f"megaman-left-walk{i}.png",
+player_image_walk_left = [load_image(f"uhura-left-walk{i}.png",
                                       (PLAYER_WALK_WIDTH, PLAYER_WALK_HEIGHT)) for i in range(4)]
-player_image_walk_shoot_right = [load_image(f"megaman-right-walk-shoot{i}.png",
+player_image_walk_shoot_right = [load_image(f"uhura-right-walk-shoot{i}.png",
                                       (PLAYER_WALK_SHOOT_WIDTH, PLAYER_WALK_HEIGHT)) for i in range(4)]
-player_image_walk_shoot_left = [load_image(f"megaman-left-walk-shoot{i}.png",
+player_image_walk_shoot_left = [load_image(f"uhura-left-walk-shoot{i}.png",
                                       (PLAYER_WALK_SHOOT_WIDTH, PLAYER_WALK_HEIGHT)) for i in range(4)]
 
 floor_tile_image = load_image("floor-tile.png", (TILE_SIZE,TILE_SIZE))
