@@ -1,6 +1,7 @@
 # Uhura
 
-A retro-inspired 2D action-platformer developed in Python using Pygame. This project
+A retro-inspired 2D action-platformer developed in Python using Pygame featuring Uhura from
+the original Star Trek series as she fights through icy moon Andoria. This project
 recreates a fast-paced gameplay, precision platforming, and side-scrolling combat mechanics
 inspired by classic NES-era action games such as Mega Man.
 
