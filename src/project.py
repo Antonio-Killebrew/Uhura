@@ -211,7 +211,7 @@ class Metall(pygame.Rect):
                                      METALL_BULLET_WIDTH, METALL_BULLET_HEIGHT)
                 self.velocity_x = -METALL_BULLET_VELOCITY_X
             elif metall.direction == "right":
-                pygame.Rect.__init__(self, metall.width, metall.y + TILE_SIZE/2,
+                pygame.Rect.__init__(self, metall.x + metall.width, metall.y + TILE_SIZE/2,
                                      METALL_BULLET_WIDTH, METALL_BULLET_HEIGHT)
                 self.velocity_x = METALL_BULLET_VELOCITY_X
             self.velocity_y = velocity_y
