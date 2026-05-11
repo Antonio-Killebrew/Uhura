@@ -36,13 +36,13 @@ PLAYER_BULLET_VELOCITY_X = 8
 HEALTH_WIDTH = 16
 HEALTH_HEIGHT = 4
 
-METALL_WIDTH = 36
-METALL_HEIGHT = 30
+SOBER_WIDTH = 36
+SOBER_HEIGHT = 30
 
-METALL_BULLET_WIDTH = 12
-METALL_BULLET_HEIGHT = METALL_BULLET_WIDTH
-METALL_BULLET_VELOCITY_X = 2
-METALL_BULLET_VELOCITY_Y = METALL_BULLET_VELOCITY_X
+SOBER_BULLET_WIDTH = 12
+SOBER_BULLET_HEIGHT = SOBER_BULLET_WIDTH
+SOBER_BULLET_VELOCITY_X = 2
+SOBER_BULLET_VELOCITY_Y = SOBER_BULLET_VELOCITY_X
 
 BLADER_WIDTH = 32
 BLADER_HEIGHT = 40
@@ -93,11 +93,11 @@ rock_tile4_image = load_image("rock-tile4.png", (TILE_SIZE,TILE_SIZE))
 door_tile_image = load_image("door-tile.png", (TILE_SIZE,TILE_SIZE))
 room_tile_image = load_image("room-tile.png", (TILE_SIZE,TILE_SIZE))
 
-metall_image_right = load_image("metall-right.png", (METALL_WIDTH,METALL_HEIGHT))
-metall_image_left = load_image("metall-left.png", (METALL_WIDTH,METALL_HEIGHT))
-metall_image_guard_right = load_image("metall-right-guard.png", (METALL_WIDTH,METALL_HEIGHT))
-metall_image_guard_left = load_image("metall-left-guard.png", (METALL_WIDTH,METALL_HEIGHT))
-metall_image_bullet = load_image("metall-bullet.png", (METALL_BULLET_WIDTH, METALL_BULLET_HEIGHT))
+sober_image_right = load_image("sober-right.png", (SOBER_WIDTH,SOBER_HEIGHT))
+sober_image_left = load_image("sober-left.png", (SOBER_WIDTH,SOBER_HEIGHT))
+sober_image_guard_right = load_image("sober-right-guard.png", (SOBER_WIDTH,SOBER_HEIGHT))
+sober_image_guard_left = load_image("sober-left-guard.png", (SOBER_WIDTH,SOBER_HEIGHT))
+sober_image_bullet = load_image("sober-bullet.png", (SOBER_BULLET_WIDTH, SOBER_BULLET_HEIGHT))
 health_image = load_image("health.png",(HEALTH_WIDTH,HEALTH_HEIGHT))
 life_energy_image = load_image("life-energy.png", (LIFE_ENERGY_WIDTH,LIFE_ENERGY_HEIGHT))
 big_life_energy_image = load_image("big-life-energy.png", (BIG_LIFE_ENERGY_WIDTH,BIG_LIFE_ENERGY_HEIGHT))
@@ -203,24 +203,24 @@ class Player(pygame.Rect):
             self.bullets.append(Player.Bullet())
             pygame.time.set_timer(SHOOTING_END, 250, 1)
 
-class Metall(pygame.Rect):
+class Sober(pygame.Rect):
     class Bullet(pygame.Rect):
-        def __init__(self, metall, velocity_y):
-            if metall.direction == "left":
-                pygame.Rect.__init__(self, metall.x, metall.y + TILE_SIZE/2,
-                                     METALL_BULLET_WIDTH, METALL_BULLET_HEIGHT)
-                self.velocity_x = -METALL_BULLET_VELOCITY_X
-            elif metall.direction == "right":
-                pygame.Rect.__init__(self, metall.x + metall.width, metall.y + TILE_SIZE/2,
-                                     METALL_BULLET_WIDTH, METALL_BULLET_HEIGHT)
-                self.velocity_x = METALL_BULLET_VELOCITY_X
+        def __init__(self, sober, velocity_y):
+            if sober.direction == "left":
+                pygame.Rect.__init__(self, sober.x, sober.y + TILE_SIZE/2,
+                                     SOBER_BULLET_WIDTH, SOBER_BULLET_HEIGHT)
+                self.velocity_x = -SOBER_BULLET_VELOCITY_X
+            elif sober.direction == "right":
+                pygame.Rect.__init__(self, sober.x + sober.width, sober.y + TILE_SIZE/2,
+                                     SOBER_BULLET_WIDTH, SOBER_BULLET_HEIGHT)
+                self.velocity_x = SOBER_BULLET_VELOCITY_X
             self.velocity_y = velocity_y
-            self.image = metall_image_bullet
+            self.image = sober_image_bullet
             self.used = False
 
     def __init__(self,x,y):
-        pygame.Rect.__init__(self,x,y,METALL_WIDTH,METALL_HEIGHT)
-        self.image = metall_image_left
+        pygame.Rect.__init__(self,x,y,SOBER_WIDTH,SOBER_HEIGHT)
+        self.image = sober_image_left
         self.velocity_y = 0
         self.direction = "left"
         self.jumping = False
@@ -232,14 +232,14 @@ class Metall(pygame.Rect):
     def update_image(self):
         if self.direction == "right":
             if self.guarding:
-                self.image = metall_image_guard_right
+                self.image = sober_image_guard_right
             else:
-                self.image = metall_image_right
+                self.image = sober_image_right
         elif self.direction == "left":
             if self.guarding:
-                self.image = metall_image_guard_left
+                self.image = sober_image_guard_left
             else:
-                self.image = metall_image_left
+                self.image = sober_image_left
 
     def set_shooting(self):
         if abs(self.x - player.x) <= TILE_SIZE*4:
@@ -247,9 +247,9 @@ class Metall(pygame.Rect):
             now = pygame.time.get_ticks()
             if now - self.last_fired > 1000:
                 self.last_fired = now
-                self.bullets.append(Metall.Bullet(self,-METALL_BULLET_VELOCITY_Y))
-                self.bullets.append(Metall.Bullet(self,0))
-                self.bullets.append(Metall.Bullet(self,METALL_BULLET_VELOCITY_Y))
+                self.bullets.append(Sober.Bullet(self,-SOBER_BULLET_VELOCITY_Y))
+                self.bullets.append(Sober.Bullet(self,0))
+                self.bullets.append(Sober.Bullet(self,SOBER_BULLET_VELOCITY_Y))
         else:
             self.guarding = True
 
@@ -321,16 +321,16 @@ def create_map():
             elif map_code == 10:
                 background_tiles.append(Tile(x,y,room_tile_image))
             elif map_code == 11:
-                metalls.append(Metall(x,y))
+                sobers.append(Sober(x,y))
             elif map_code == 12:
                 bladers.append(Blader(x,y))
 
 def reset_game():
-    global player, metalls, metall_bullets, tiles, background_tiles,\
+    global player, sobers, sober_bullets, tiles, background_tiles,\
     items, spikes, bladers, game_over
     player = Player()
-    metalls = []
-    metall_bullets = []
+    sobers = []
+    sober_bullets = []
     tiles = []
     background_tiles = []
     items = []
@@ -388,12 +388,12 @@ def move_map_x(velocity_x):
     for tile in tiles:
         tile.x += velocity_x
 
-    for metall in metalls:
-        metall.x += velocity_x
-        for bullet in metall.bullets:
+    for sober in sobers:
+        sober.x += velocity_x
+        for bullet in sober.bullets:
             bullet.x += velocity_x
 
-    for bullet in metall_bullets:
+    for bullet in sober_bullets:
         bullet.x += velocity_x
 
     for item in items:
@@ -407,7 +407,7 @@ def move_map_x(velocity_x):
         blader.x += velocity_x
 
 def move():
-    global metalls, items, bladers, metall_bullets, game_over
+    global sobers, items, bladers, sober_bullets, game_over
     # if player.direction == "left" and player.velocity_x < 0:
     #     player.velocity_x += FRICTION
     # elif player.direction == "right" and player.velocity_x > 0:
@@ -434,14 +434,14 @@ def move():
 
     for bullet in player.bullets:
         bullet.x += bullet.velocity_x
-        for metall in metalls:
-            if metall.health > 0 and not bullet.used and bullet.colliderect(metall):
+        for sober in sobers:
+            if sober.health > 0 and not bullet.used and bullet.colliderect(sober):
                 bullet.used = True
-                if not metall.guarding:
-                    metall.health -= 1
-                    if metall.health <= 0:
-                        drop_item(metall)
-                        metall_bullets.extend(metall.bullets)
+                if not sober.guarding:
+                    sober.health -= 1
+                    if sober.health <= 0:
+                        drop_item(sober)
+                        sober_bullets.extend(sober.bullets)
                         player.score += 500
 
         for blader in bladers:
@@ -454,27 +454,27 @@ def move():
 
     player.bullets = [bullet for bullet in player.bullets if not bullet.used \
                       and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
-    metalls = [metall for metall in metalls if metall.health > 0]
+    sobers = [sober for sober in sobers if sober.health > 0]
     bladers = [blader for blader in bladers if blader.health > 0]
 
-    for metall in metalls:
-        if player.x < metall.x:
-            metall.direction = "left"
+    for sober in sobers:
+        if player.x < sober.x:
+            sober.direction = "left"
         else:
-            metall.direction = "right"
+            sober.direction = "right"
 
-        metall.velocity_y += GRAVITY
-        metall.y += metall.velocity_y
+        sober.velocity_y += GRAVITY
+        sober.y += sober.velocity_y
 
-        check_tile_collision_y(metall)
+        check_tile_collision_y(sober)
 
-        if not player.invincible and player.colliderect(metall):
-            # print("collision with metall")
+        if not player.invincible and player.colliderect(sober):
+            # print("collision with sober")
             player.health -= 1
             player.set_invincible()
 
-        metall.set_shooting()
-        for bullet in metall.bullets:
+        sober.set_shooting()
+        for bullet in sober.bullets:
             bullet.x += bullet.velocity_x
             bullet.y += bullet.velocity_y
             if not player.invincible and player.colliderect(bullet):
@@ -484,10 +484,10 @@ def move():
 
         
 
-        metall.bullets = [bullet for bullet in metall.bullets if not bullet.used \
+        sober.bullets = [bullet for bullet in sober.bullets if not bullet.used \
                           and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
 
-    for bullet in metall_bullets:
+    for bullet in sober_bullets:
         bullet.x += bullet.velocity_x
         bullet.y += bullet.velocity_y
         if not player.invincible and player.colliderect(bullet):
@@ -497,7 +497,7 @@ def move():
 
     
 
-    metall_bullets = [bullet for bullet in metall_bullets if not bullet.used \
+    sober_bullets = [bullet for bullet in sober_bullets if not bullet.used \
                         and bullet.x + bullet.width > 0 and bullet.x < GAME_WIDTH]
 
 
@@ -562,14 +562,14 @@ def draw():
     for bullet in player.bullets:
         window.blit(bullet.image, bullet)
 
-    for metall in metalls:
-        if metall.x <= GAME_WIDTH:
-            metall.update_image()
-            window.blit(metall.image, metall)
-        for bullet in metall.bullets:
+    for sober in sobers:
+        if sober.x <= GAME_WIDTH:
+            sober.update_image()
+            window.blit(sober.image, sober)
+        for bullet in sober.bullets:
             window.blit(bullet.image, bullet)
 
-    for bullet in metall_bullets:
+    for bullet in sober_bullets:
         window.blit(bullet.image, bullet)
 
     for blader in bladers:
@@ -600,8 +600,8 @@ def draw():
         window.blit(text_surface, (GAME_WIDTH/8, GAME_HEIGHT/2 + TILE_SIZE))
 
 player = Player()
-metalls = []
-metall_bullets = []
+sobers = []
+sober_bullets = []
 tiles = []
 background_tiles = []
 items = []
